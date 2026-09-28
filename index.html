@@ -12,6 +12,7 @@
             margin: 0;
             padding: 16px;
             padding-bottom: 80px;
+            -webkit-tap-highlight-color: transparent;
         }
         header {
             text-align: center;
@@ -37,13 +38,14 @@
             flex: 1;
             background: transparent;
             border: none;
-            padding: 10px 8px;
-            font-size: 12px;
+            padding: 12px 8px;
+            font-size: 13px;
             font-weight: 600;
             border-radius: 9px;
             cursor: pointer;
             color: #8e8e93;
             text-align: center;
+            -webkit-appearance: none;
         }
         .tab-btn.active {
             background: white;
@@ -118,11 +120,11 @@
         <p class="subtitle">Girone G | Trevigliese</p>
     </header>
 
-    <!-- Menu a Tab -->
+    <!-- Menu a Tab Ottimizzato per Mobile -->
     <div class="tabs">
-        <button class="tab-btn active" id="btn-home" onclick="cambiaTab('home')">🏠 Home</button>
-        <button class="tab-btn" id="btn-calendar" onclick="cambiaTab('calendar')">📅 Calendario</button>
-        <button class="tab-btn" id="btn-fields" onclick="cambiaTab('fields')">📍 Sedi Campi</button>
+        <button class="tab-btn active" data-target="home">🏠 Home</button>
+        <button class="tab-btn" data-target="calendar">📅 Calendario</button>
+        <button class="tab-btn" data-target="fields">📍 Sedi Campi</button>
     </div>
 
     <!-- SEZIONE 1: HOME -->
@@ -133,8 +135,8 @@
         <div class="card highlight">
             <div class="card-title">Trevigliese S.S.D. A.R.L.</div>
             <div class="card-details">
-                🏠 <strong>Campo:</strong> C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio[cite: 2]<br>
-                ⏰ <strong>Orario Fissato:</strong> Sabato ore 15:00[cite: 2, 4]
+                🏠 <strong>Campo:</strong> C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio<br>
+                ⏰ <strong>Orario Fissato:</strong> Sabato ore 15:00
             </div>
         </div>
     </div>
@@ -158,102 +160,98 @@
     <script>
         // Dati Sedi Campi (ordinati alfabeticamente per Società)
         const listaCampi = [
-            { society: "A.C.O.S. Treviglio Calcio", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },[cite: 2]
-            { society: "Accademia PBC Gera Dadda", campo: "2338", den: "Campo Comunale N.2", loc: "Pontirolo Nuovo", ora: "14:30", giorno: "Sabato", indirizzo: "Via Armando Diaz" },[cite: 2]
-            { society: "Atalanta Bergamasca C. Srl Sq.B", campo: "55", den: "C.S. Comunale N.1 (E.A)", loc: "Brembate", ora: "16:00", giorno: "Domenica", indirizzo: "Via Oratorio, 20" },[cite: 2]
-            { society: "Brignanese Calcio A.S.D.", campo: "1208", den: "Centro Sportivo Comunale", loc: "Brignano Gera d'Adda", ora: "14:45", giorno: "Sabato", indirizzo: "Via Olimpia" },[cite: 2]
-            { society: "Calcio Oratorio Cologno", campo: "7576", den: "Oratorio \"San Giovanni Bosco\"", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Manzoni, 15" },[cite: 2]
-            { society: "Caravaggio Srl", campo: "370", den: "C.S. Comunale - Campo N.2 E.A.", loc: "Caravaggio", ora: "14:00", giorno: "Sabato", indirizzo: "Via G. Castoldi, 11" },[cite: 2]
-            { society: "Colognese", campo: "2649", den: "Stadio Comunale Facchetti 2 E.A", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Delle Galose" },[cite: 2]
-            { society: "Oratorio Calvenzano", campo: "1785", den: "Oratorio \"S.Croce\"", loc: "Calvenzano", ora: "14:30", giorno: "Sabato", indirizzo: "Via Roma, 10" },[cite: 2]
-            { society: "Trevigliese S.S.D. A.R.L.", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },[cite: 2]
-            { society: "Virtusciseranobergamo1909 Sq.B", campo: "809", den: "C.S. Comunale - Campo N.2 (E.A)", loc: "Ciserano", ora: "11:00", giorno: "Domenica", indirizzo: "Via Mazzini 13" }[cite: 2]
+            { society: "A.C.O.S. Treviglio Calcio", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },
+            { society: "Accademia PBC Gera Dadda", campo: "2338", den: "Campo Comunale N.2", loc: "Pontirolo Nuovo", ora: "14:30", giorno: "Sabato", indirizzo: "Via Armando Diaz" },
+            { society: "Atalanta Bergamasca C. Srl Sq.B", campo: "55", den: "C.S. Comunale N.1 (E.A)", loc: "Brembate", ora: "16:00", giorno: "Domenica", indirizzo: "Via Oratorio, 20" },
+            { society: "Brignanese Calcio A.S.D.", campo: "1208", den: "Centro Sportivo Comunale", loc: "Brignano Gera d'Adda", ora: "14:45", giorno: "Sabato", indirizzo: "Via Olimpia" },
+            { society: "Calcio Oratorio Cologno", campo: "7576", den: "Oratorio \"San Giovanni Bosco\"", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Manzoni, 15" },
+            { society: "Caravaggio Srl", campo: "370", den: "C.S. Comunale - Campo N.2 E.A.", loc: "Caravaggio", ora: "14:00", giorno: "Sabato", indirizzo: "Via G. Castoldi, 11" },
+            { society: "Colognese", campo: "2649", den: "Stadio Comunale Facchetti 2 E.A", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Delle Galose" },
+            { society: "Oratorio Calvenzano", campo: "1785", den: "Oratorio \"S.Croce\"", loc: "Calvenzano", ora: "14:30", giorno: "Sabato", indirizzo: "Via Roma, 10" },
+            { society: "Trevigliese S.S.D. A.R.L.", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },
+            { society: "Virtusciseranobergamo1909 Sq.B", campo: "809", den: "C.S. Comunale - Campo N.2 (E.A)", loc: "Ciserano", ora: "11:00", giorno: "Domenica", indirizzo: "Via Mazzini 13" }
         ];
 
         // Calendario Completo Andata
         const listaPartite = [
-            { giornata: 1, data: "2026-10-03 15:00", match: "Or. Calvenzano vs Trevigliese", campo: "Oratorio \"S.Croce\", Via Roma 10, Calvenzano" },[cite: 2, 4]
-            { giornata: 1, data: "2026-10-03 15:00", match: "Colognese vs Oratorio Cologno", campo: "Stadio Comunale Facchetti 2" },[cite: 2, 4]
-            { giornata: 1, data: "2026-10-03 15:00", match: "Accademia PBC vs Caravaggio", campo: "Campo Comunale N. 2, Pontirolo Nuovo" },[cite: 2, 4]
-            { giornata: 1, data: "2026-10-04 11:00", match: "Virtusciseranobergamo B vs Atalanta B", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },[cite: 2, 4]
-            { giornata: 1, data: "2026-10-03 15:00", match: "A.C.O.S. Treviglio vs Brignanese", campo: "C.S. \"A. Mazza\", Treviglio" },[cite: 2, 4]
+            { giornata: 1, data: "2026-10-03 15:00", match: "Or. Calvenzano vs Trevigliese", campo: "Oratorio \"S.Croce\", Via Roma 10, Calvenzano" },
+            { giornata: 1, data: "2026-10-03 15:00", match: "Colognese vs Oratorio Cologno", campo: "Stadio Comunale Facchetti 2" },
+            { giornata: 1, data: "2026-10-03 15:00", match: "Accademia PBC vs Caravaggio", campo: "Campo Comunale N. 2, Pontirolo Nuovo" },
+            { giornata: 1, data: "2026-10-04 11:00", match: "Virtusciseranobergamo B vs Atalanta B", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
+            { giornata: 1, data: "2026-10-03 15:00", match: "A.C.O.S. Treviglio vs Brignanese", campo: "C.S. \"A. Mazza\", Treviglio" },
 
-            { giornata: 2, data: "2026-10-10 15:00", match: "Atalanta B vs A.C.O.S. Treviglio", campo: "C.S. Comunale N.1, Brembate" },[cite: 2, 4]
-            { giornata: 2, data: "2026-10-10 15:00", match: "Caravaggio vs Virtusciseranobergamo B", campo: "C.S. Comunale, Caravaggio" },[cite: 2, 4]
-            { giornata: 2, data: "2026-10-10 15:00", match: "Oratorio Cologno vs Accademia PBC", campo: "Oratorio San Giovanni Bosco, Cologno al Serio" },[cite: 2, 4]
-            { giornata: 2, data: "2026-10-10 15:00", match: "Trevigliese vs Colognese", campo: "C.S. Comunale \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 2, data: "2026-10-10 15:00", match: "Brignanese vs Or. Calvenzano", campo: "Centro Sportivo Comunale, Brignano" },[cite: 2, 4]
+            { giornata: 2, data: "2026-10-10 15:00", match: "Atalanta B vs A.C.O.S. Treviglio", campo: "C.S. Comunale N.1, Brembate" },
+            { giornata: 2, data: "2026-10-10 15:00", match: "Caravaggio vs Virtusciseranobergamo B", campo: "C.S. Comunale, Caravaggio" },
+            { giornata: 2, data: "2026-10-10 15:00", match: "Oratorio Cologno vs Accademia PBC", campo: "Oratorio San Giovanni Bosco, Cologno al Serio" },
+            { giornata: 2, data: "2026-10-10 15:00", match: "Trevigliese vs Colognese", campo: "C.S. Comunale \"A. Mazza\", Treviglio" },
+            { giornata: 2, data: "2026-10-10 15:00", match: "Brignanese vs Or. Calvenzano", campo: "Centro Sportivo Comunale, Brignano" },
 
-            { giornata: 3, data: "2026-10-17 15:00", match: "Colognese vs Or. Calvenzano", campo: "Stadio Comunale Facchetti 2, Cologno" },[cite: 2, 4]
-            { giornata: 3, data: "2026-10-17 15:00", match: "Accademia PBC vs Trevigliese", campo: "Campo Comunale N. 2, Pontirolo Nuovo" },[cite: 2, 4]
-            { giornata: 3, data: "2026-10-17 15:00", match: "Virtusciseranobergamo B vs Oratorio Cologno", campo: "C.S. Comunale, Ciserano" },[cite: 2, 4]
-            { giornata: 3, data: "2026-10-17 15:00", match: "A.C.O.S. Treviglio vs Caravaggio", campo: "C.S. \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 3, data: "2026-10-17 15:00", match: "Brignanese vs Atalanta B", campo: "Centro Sportivo Comunale, Brignano" },[cite: 2, 4]
+            { giornata: 3, data: "2026-10-17 15:00", match: "Colognese vs Or. Calvenzano", campo: "Stadio Comunale Facchetti 2, Cologno" },
+            { giornata: 3, data: "2026-10-17 15:00", match: "Accademia PBC vs Trevigliese", campo: "Campo Comunale N. 2, Pontirolo Nuovo" },
+            { giornata: 3, data: "2026-10-17 15:00", match: "Virtusciseranobergamo B vs Oratorio Cologno", campo: "C.S. Comunale, Ciserano" },
+            { giornata: 3, data: "2026-10-17 15:00", match: "A.C.O.S. Treviglio vs Caravaggio", campo: "C.S. \"A. Mazza\", Treviglio" },
+            { giornata: 3, data: "2026-10-17 15:00", match: "Brignanese vs Atalanta B", campo: "Centro Sportivo Comunale, Brignano" },
 
-            { giornata: 4, data: "2026-10-24 15:00", match: "Caravaggio vs Atalanta B", campo: "C.S. Comunale, Caravaggio" },[cite: 2, 4]
-            { giornata: 4, data: "2026-10-24 15:00", match: "Oratorio Cologno vs A.C.O.S. Treviglio", campo: "Oratorio San Giovanni Bosco" },[cite: 2, 4]
-            { giornata: 4, data: "2026-10-24 15:00", match: "Trevigliese vs Virtusciseranobergamo B", campo: "C.S. Comunale \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 4, data: "2026-10-24 15:00", match: "Or. Calvenzano vs Accademia PBC", campo: "Oratorio S.Croce, Calvenzano" },[cite: 2, 4]
-            { giornata: 4, data: "2026-10-24 15:00", match: "Colognese vs Brignanese", campo: "Stadio Comunale Facchetti 2" },[cite: 2, 4]
+            { giornata: 4, data: "2026-10-24 15:00", match: "Caravaggio vs Atalanta B", campo: "C.S. Comunale, Caravaggio" },
+            { giornata: 4, data: "2026-10-24 15:00", match: "Oratorio Cologno vs A.C.O.S. Treviglio", campo: "Oratorio San Giovanni Bosco" },
+            { giornata: 4, data: "2026-10-24 15:00", match: "Trevigliese vs Virtusciseranobergamo B", campo: "C.S. Comunale \"A. Mazza\", Treviglio" },
+            { giornata: 4, data: "2026-10-24 15:00", match: "Or. Calvenzano vs Accademia PBC", campo: "Oratorio S.Croce, Calvenzano" },
+            { giornata: 4, data: "2026-10-24 15:00", match: "Colognese vs Brignanese", campo: "Stadio Comunale Facchetti 2" },
 
-            { giornata: 5, data: "2026-10-31 15:00", match: "Accademia PBC vs Colognese", campo: "Pontirolo Nuovo" },[cite: 2, 4]
-            { giornata: 5, data: "2026-10-31 15:00", match: "Virtusciseranobergamo B vs Or. Calvenzano", campo: "Ciserano" },[cite: 2, 4]
-            { giornata: 5, data: "2026-10-31 15:00", match: "A.C.O.S. Treviglio vs Trevigliese", campo: "C.S. \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 5, data: "2026-10-31 15:00", match: "Atalanta B vs Oratorio Cologno", campo: "Brembate" },[cite: 2, 4]
-            { giornata: 5, data: "2026-10-31 15:00", match: "Brignanese vs Caravaggio", campo: "Brignano Gera d'Adda" },[cite: 2, 4]
+            { giornata: 5, data: "2026-10-31 15:00", match: "Accademia PBC vs Colognese", campo: "Pontirolo Nuovo" },
+            { giornata: 5, data: "2026-10-31 15:00", match: "Virtusciseranobergamo B vs Or. Calvenzano", campo: "Ciserano" },
+            { giornata: 5, data: "2026-10-31 15:00", match: "A.C.O.S. Treviglio vs Trevigliese", campo: "C.S. \"A. Mazza\", Treviglio" },
+            { giornata: 5, data: "2026-10-31 15:00", match: "Atalanta B vs Oratorio Cologno", campo: "Brembate" },
+            { giornata: 5, data: "2026-10-31 15:00", match: "Brignanese vs Caravaggio", campo: "Brignano Gera d'Adda" },
 
-            { giornata: 6, data: "2026-11-07 15:00", match: "Oratorio Cologno vs Caravaggio", campo: "Cologno al Serio" },[cite: 2, 4]
-            { giornata: 6, data: "2026-11-07 15:00", match: "Trevigliese vs Atalanta B", campo: "C.S. \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 6, data: "2026-11-07 15:00", match: "Or. Calvenzano vs A.C.O.S. Treviglio", campo: "Calvenzano" },[cite: 2, 4]
-            { giornata: 6, data: "2026-11-07 15:00", match: "Colognese vs Virtusciseranobergamo B", campo: "Cologno al Serio" },[cite: 2, 4]
-            { giornata: 6, data: "2026-11-07 15:00", match: "Accademia PBC vs Brignanese", campo: "Pontirolo Nuovo" },[cite: 2, 4]
+            { giornata: 6, data: "2026-11-07 15:00", match: "Oratorio Cologno vs Caravaggio", campo: "Cologno al Serio" },
+            { giornata: 6, data: "2026-11-07 15:00", match: "Trevigliese vs Atalanta B", campo: "C.S. \"A. Mazza\", Treviglio" },
+            { giornata: 6, data: "2026-11-07 15:00", match: "Or. Calvenzano vs A.C.O.S. Treviglio", campo: "Calvenzano" },
+            { giornata: 6, data: "2026-11-07 15:00", match: "Colognese vs Virtusciseranobergamo B", campo: "Cologno al Serio" },
+            { giornata: 6, data: "2026-11-07 15:00", match: "Accademia PBC vs Brignanese", campo: "Pontirolo Nuovo" },
 
-            { giornata: 7, data: "2026-11-14 15:00", match: "Virtusciseranobergamo B vs Accademia PBC", campo: "Ciserano" },[cite: 2, 4]
-            { giornata: 7, data: "2026-11-14 15:00", match: "A.C.O.S. Treviglio vs Colognese", campo: "Treviglio" },[cite: 2, 4]
-            { giornata: 7, data: "2026-11-14 15:00", match: "Atalanta B vs Or. Calvenzano", campo: "Brembate" },[cite: 2, 4]
-            { giornata: 7, data: "2026-11-14 15:00", match: "Caravaggio vs Trevigliese", campo: "C.S. Comunale, Caravaggio" },[cite: 2, 4]
-            { giornata: 7, data: "2026-11-14 15:00", match: "Brignanese vs Oratorio Cologno", campo: "Brignano Gera d'Adda" },[cite: 2, 4]
+            { giornata: 7, data: "2026-11-14 15:00", match: "Virtusciseranobergamo B vs Accademia PBC", campo: "Ciserano" },
+            { giornata: 7, data: "2026-11-14 15:00", match: "A.C.O.S. Treviglio vs Colognese", campo: "Treviglio" },
+            { giornata: 7, data: "2026-11-14 15:00", match: "Atalanta B vs Or. Calvenzano", campo: "Brembate" },
+            { giornata: 7, data: "2026-11-14 15:00", match: "Caravaggio vs Trevigliese", campo: "C.S. Comunale, Caravaggio" },
+            { giornata: 7, data: "2026-11-14 15:00", match: "Brignanese vs Oratorio Cologno", campo: "Brignano Gera d'Adda" },
 
-            { giornata: 8, data: "2026-11-21 15:00", match: "Trevigliese vs Oratorio Cologno", campo: "C.S. \"A. Mazza\", Treviglio" },[cite: 2, 4]
-            { giornata: 8, data: "2026-11-21 15:00", match: "Or. Calvenzano vs Caravaggio", campo: "Calvenzano" },[cite: 2, 4]
-            { giornata: 8, data: "2026-11-21 15:00", match: "Colognese vs Atalanta B", campo: "Cologno al Serio" },[cite: 2, 4]
-            { giornata: 8, data: "2026-11-21 15:00", match: "Accademia PBC vs A.C.O.S. Treviglio", campo: "Pontirolo Nuovo" },[cite: 2, 4]
-            { giornata: 8, data: "2026-11-21 15:00", match: "Virtusciseranobergamo B vs Brignanese", campo: "Ciserano" },[cite: 2, 4]
+            { giornata: 8, data: "2026-11-21 15:00", match: "Trevigliese vs Oratorio Cologno", campo: "C.S. \"A. Mazza\", Treviglio" },
+            { giornata: 8, data: "2026-11-21 15:00", match: "Or. Calvenzano vs Caravaggio", campo: "Calvenzano" },
+            { giornata: 8, data: "2026-11-21 15:00", match: "Colognese vs Atalanta B", campo: "Cologno al Serio" },
+            { giornata: 8, data: "2026-11-21 15:00", match: "Accademia PBC vs A.C.O.S. Treviglio", campo: "Pontirolo Nuovo" },
+            { giornata: 8, data: "2026-11-21 15:00", match: "Virtusciseranobergamo B vs Brignanese", campo: "Ciserano" },
 
-            { giornata: 9, data: "2026-11-28 15:00", match: "A.C.O.S. Treviglio vs Virtusciseranobergamo B", campo: "Treviglio" },[cite: 2, 4]
-            { giornata: 9, data: "2026-11-28 15:00", match: "Atalanta B vs Accademia PBC", campo: "Brembate" },[cite: 2, 4]
-            { giornata: 9, data: "2026-11-28 15:00", match: "Caravaggio vs Colognese", campo: "Caravaggio" },[cite: 2, 4]
-            { giornata: 9, data: "2026-11-28 15:00", match: "Oratorio Cologno vs Or. Calvenzano", campo: "Cologno al Serio" },[cite: 2, 4]
-            { giornata: 9, data: "2026-11-28 15:00", match: "Brignanese vs Trevigliese", campo: "Centro Sportivo Comunale, Brignano" }[cite: 2, 4]
+            { giornata: 9, data: "2026-11-28 15:00", match: "A.C.O.S. Treviglio vs Virtusciseranobergamo B", campo: "Treviglio" },
+            { giornata: 9, data: "2026-11-28 15:00", match: "Atalanta B vs Accademia PBC", campo: "Brembate" },
+            { giornata: 9, data: "2026-11-28 15:00", match: "Caravaggio vs Colognese", campo: "Caravaggio" },
+            { giornata: 9, data: "2026-11-28 15:00", match: "Oratorio Cologno vs Or. Calvenzano", campo: "Cologno al Serio" },
+            { giornata: 9, data: "2026-11-28 15:00", match: "Brignanese vs Trevigliese", campo: "Centro Sportivo Comunale, Brignano" }
         ];
 
-        // Funzione per cambiare tab sicura al 100%
-        function cambiaTab(idSezione) {
-            var sezioni = document.getElementsByClassName('section');
-            for (var i = 0; i < sezioni.length; i++) {
-                sezioni[i].style.display = 'none';
-                sezioni[i].classList.remove('active');
-            }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Gestione Tab interattivi per Mobile e Desktop
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    document.querySelectorAll('.section').forEach(sec => {
+                        sec.style.display = 'none';
+                        sec.classList.remove('active');
+                    });
+                    
+                    buttons.forEach(b => b.classList.remove('active'));
+                    
+                    const targetSec = document.getElementById(target);
+                    if (targetSec) {
+                        targetSec.style.display = 'block';
+                        targetSec.classList.add('active');
+                    }
+                    this.classList.add('active');
+                });
+            });
 
-            var bottoni = document.getElementsByClassName('tab-btn');
-            for (var j = 0; j < bottoni.length; j++) {
-                bottoni[j].classList.remove('active');
-            }
-
-            var sezioneTarget = document.getElementById(idSezione);
-            if (sezioneTarget) {
-                sezioneTarget.style.display = 'block';
-                sezioneTarget.classList.add('active');
-            }
-
-            var bottoneTarget = document.getElementById('btn-che-' + idSezione) || document.getElementById('btn-' + idSezione);
-            if (bottoneTarget) {
-                bottoneTarget.classList.add('active');
-            }
-        }
-
-        // Inizializzazione contenuti
-        window.onload = function() {
             // 1. Home - Prossima Partita
             var containerHome = document.getElementById('nextMatchContainer');
             var oggi = new Date();
@@ -271,11 +269,14 @@
                 containerHome.innerHTML = '<div class="next-match-banner">' +
                     '<h3>🔥 Prossima Partita Trevigliese</h3>' +
                     '<div class="match-vs">' + next.match + '</div>' +
-                    '<div class="match-info">📅 ' + dataFmt + ' - ⏰ ' + oraFmt + '<br>📍 ' + next.campo + '</div>' +
+                    '<div class="match-info">📅 ' + dataFmt + ' - ⏰ ' + oraFmd_safe(oraFmt) + '<br>📍 ' + next.campo + '</div>' +
                     '</div>';
             } else {
                 containerHome.innerHTML = '<div class="card"><p>Nessuna partita futura trovata.</p></div>';
             }
+
+            // Funzione di supporto orario sicuro
+            function oraFmd_safe(o) { return o; }
 
             // 2. Calendario Completo
             var containerCal = document.getElementById('calendarList');
@@ -314,7 +315,7 @@
                     '⏰ <strong>Orario Fissato:</strong> ' + f.giornata + ' ore ' + f.ora + '</div>';
                 containerFields.appendChild(divF);
             }
-        };
+        });
     </script>
 </body>
 </html>
