@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trevigliese Bianchi - Pulcini 2017 - Stagione 2026-2027</title>
+    <title>Planner Partite - Famiglia & Calcio</title>
     <style>
+        :root {
+            --color-s7: #007aff;    /* Blu per Calcio a 7 */
+            --color-over: #34c759;  /* Verde per Over 40 */
+            --color-pulcini: #ff9500;/* Arancione per Pulcini 2017 */
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-secondary: #8e8e93;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f2f2f7;
-            color: #1c1c1e;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 16px;
             padding-bottom: 80px;
@@ -24,32 +33,35 @@
         }
         p.subtitle {
             font-size: 13px;
-            color: #8e8e93;
+            color: var(--text-secondary);
             margin: 0;
         }
+        /* Menu a Tab */
         .tabs {
             display: flex;
             background: #e5e5ea;
             border-radius: 12px;
             padding: 3px;
             margin-bottom: 16px;
+            overflow-x: auto;
         }
         .tab-btn {
             flex: 1;
             background: transparent;
             border: none;
-            padding: 12px 8px;
-            font-size: 13px;
+            padding: 10px 4px;
+            font-size: 11px;
             font-weight: 600;
             border-radius: 9px;
             cursor: pointer;
-            color: #8e8e93;
+            color: var(--text-secondary);
             text-align: center;
+            white-space: nowrap;
             -webkit-appearance: none;
         }
         .tab-btn.active {
             background: white;
-            color: #1c1c1e;
+            color: var(--text-main);
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .section {
@@ -58,23 +70,47 @@
         .section.active {
             display: block;
         }
+        /* Filtri a bottoni */
+        .filter-container {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .filter-btn {
+            background: #e5e5ea;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .filter-btn.active {
+            background: var(--text-main);
+            color: white;
+        }
+        /* Card generiche */
         .card {
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             border-left: 4px solid #c7c7cc;
         }
-        .card.highlight {
-            background: #e3f2fd;
-            border-left: 5px solid #2196f3;
-        }
+        .card.s7 { border-left-color: var(--color-s7); }
+        .card.over { border-left-color: var(--color-over); }
+        .card.pulcini { border-left-color: var(--color-pulcini); }
+
         .card-header {
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            color: #8e8e93;
+            color: var(--text-secondary);
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
@@ -97,42 +133,26 @@
         .card-details a:hover {
             text-decoration: underline;
         }
-        .next-match-banner {
-            background: linear-gradient(135deg, #ff9500, #ffb340);
-            color: white;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 10px rgba(255,149,0,0.3);
-        }
-        .next-match-banner h3 {
-            margin: 0 0 8px 0;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .next-match-banner .match-vs {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .next-match-banner .match-info {
-            font-size: 13px;
-            opacity: 0.95;
-            line-height: 1.5;
-        }
-        .next-match-banner .match-info a {
-            color: #ffffff;
-            text-decoration: underline;
+        /* Badge Squadra */
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: bold;
+            color: white;
+            text-transform: uppercase;
         }
+        .badge.s7 { background-color: var(--color-s7); }
+        .badge.over { background-color: var(--color-over); }
+        .badge.pulcini { background-color: var(--color-pulcini); }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>⚽ Trevigliese Bianchi - Pulcini 2017</h1>
-        <p class="subtitle">Stagione 2026-2027 | Girone G</p>
+        <h1>⚽ Planner Partite Stagione</h1>
+        <p class="subtitle">Calcio a 7 • Over 40 • Pulcini 2017</p>
     </header>
 
     <!-- Menu a Tab -->
@@ -140,124 +160,77 @@
         <button class="tab-btn active" data-target="home">🏠 Home</button>
         <button class="tab-btn" data-target="calendar">📅 Calendario</button>
         <button class="tab-btn" data-target="fields">📍 Sedi Campi</button>
+        <button class="tab-btn" data-target="standings">🏆 Classifiche</button>
     </div>
 
-    <!-- SEZIONE 1: HOME -->
+    <!-- SEZIONE 1: HOMEPAGE -->
     <div id="home" class="section active">
-        <div id="nextMatchContainer"></div>
-        
-        <div style="font-size: 14px; font-weight: 600; margin: 16px 0 8px 4px;">📌 Info Rapide Squadra</div>
-        <div class="card highlight">
-            <div class="card-title">Trevigliese S.S.D. A.R.L.</div>
-            <div class="card-details">
-                🏠 <strong>Campo:</strong> <a href="https://maps.google.com/?q=Via+Malgari+1,+Treviglio" target="_blank">C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio 🗺️</a><br>
-                ⏰ <strong>Orario Fissato:</strong> Sabato ore 15:00
-            </div>
-        </div>
+        <div style="font-size: 14px; font-weight: 600; margin: 0 0 8px 4px;">🔥 Prossimi Appuntamenti</div>
+        <div id="nextMatchesContainer"></div>
     </div>
 
     <!-- SEZIONE 2: CALENDARIO -->
     <div id="calendar" class="section">
-        <div style="font-size: 13px; color: #8e8e93; margin-bottom: 12px; text-align: center;">
-            Le partite della Trevigliese sono evidenziate in azzurro.
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterCalendar('all', this)">Tutte</button>
+            <button class="filter-btn" onclick="filterCalendar('s7', this)">Calcio a 7</button>
+            <button class="filter-btn" onclick="filterCalendar('over', this)">Over 40</button>
+            <button class="filter-btn" onclick="filterCalendar('pulcini', this)">Pulcini 2017</button>
         </div>
         <div id="calendarList"></div>
     </div>
 
     <!-- SEZIONE 3: SEDI CAMPI -->
     <div id="fields" class="section">
-        <div style="font-size: 13px; color: #8e8e93; margin-bottom: 12px; text-align: center;">
-            Elenco alfabetico delle società del girone con link diretti al navigatore.
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterFields('all', this)">Tutti i Campi</button>
+            <button class="filter-btn" onclick="filterFields('s7', this)">Calcio a 7</button>
+            <button class="filter-btn" onclick="filterFields('over', this)">Over 40</button>
+            <button class="filter-btn" onclick="filterFields('pulcini', this)">Pulcini 2017</button>
         </div>
         <div id="fieldsList"></div>
     </div>
 
+    <!-- SEZIONE 4: CLASSIFICHE -->
+    <div id="standings" class="section">
+        <div class="card" style="text-align: center; padding: 30px 16px;">
+            <div class="card-title">🏆 Classifiche in arrivo</div>
+            <div class="card-details" style="color: var(--text-secondary);">
+                Questa sezione è attualmente vuota e pronta per essere configurata.
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Dati Sedi Campi
-        const listaCampi = [
-            { society: "A.C.O.S. Treviglio Calcio", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },
-            { society: "Accademia PBC Gera Dadda", campo: "2338", den: "Campo Comunale N.2", loc: "Pontirolo Nuovo", ora: "14:30", giorno: "Sabato", indirizzo: "Via Armando Diaz" },
-            { society: "Atalanta Bergamasca C. Srl Sq.B", campo: "55", den: "C.S. Comunale N.1 (E.A)", loc: "Brembate", ora: "16:00", giorno: "Domenica", indirizzo: "Via Oratorio, 20" },
-            { society: "Brignanese Calcio A.S.D.", campo: "1208", den: "Centro Sportivo Comunale", loc: "Brignano Gera d'Adda", ora: "14:45", giorno: "Sabato", indirizzo: "Via Olimpia" },
-            { society: "Calcio Oratorio Cologno", campo: "7576", den: "Oratorio \"San Giovanni Bosco\"", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Manzoni, 15" },
-            { society: "Caravaggio Srl", campo: "370", den: "C.S. Comunale - Campo N.2 E.A.", loc: "Caravaggio", ora: "14:00", giorno: "Sabato", indirizzo: "Via G. Castoldi, 11" },
-            { society: "Colognese", campo: "2649", den: "Stadio Comunale Facchetti 2 E.A", loc: "Cologno al Serio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Delle Galose" },
-            { society: "Oratorio Calvenzano", campo: "1785", den: "Oratorio \"S.Croce\"", loc: "Calvenzano", ora: "14:30", giorno: "Sabato", indirizzo: "Via Roma, 10" },
-            { society: "Trevigliese S.S.D. A.R.L.", campo: "1331", den: 'C.S. Comunale "A.Mazza"', loc: "Treviglio", ora: "14:30", giorno: "Sabato", indirizzo: "Via Malgari 1" },
-            { society: "Virtusciseranobergamo1909 Sq.B", campo: "809", den: "C.S. Comunale - Campo N.2 (E.A)", loc: "Ciserano", ora: "11:00", giorno: "Domenica", indirizzo: "Via Mazzini 13" }
+        // Database unificato delle partite (Esempi per le 3 categorie)
+        const tutteLePartite = [
+            { id: 1, categoria: 's7', catNome: 'Calcio a 7 (Vecchia Guardia)', data: '2026-10-05 21:00', match: 'Vecchia Guardia vs Real Sesto', campo: 'C.S. Comunale, Via Sport 1, Sesto San Giovanni' },
+            { id: 2, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-06 20:30', match: 'GL Sporting vs Atletico Over', campo: 'Stadio Comunale, Via Roma 15, Melzo' },
+            { id: 3, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-10 15:00', match: 'Trevigliese vs Colognese', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+            { id: 4, categoria: 's7', catNome: 'Calcio a 7 (Vecchia Guardia)', data: '2026-10-12 21:00', match: 'Brera S7 vs Vecchia Guardia', campo: 'Centro Sportivo Lombardia, Milano' },
+            { id: 5, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-17 15:00', match: 'Accademia PBC vs Trevigliese', campo: 'Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo' }
         ];
 
-        // Calendario Completo Andata
-        const listaPartite = [
-            { giornata: 1, data: "2026-10-03 15:00", match: "Or. Calvenzano vs Trevigliese", campo: "Oratorio \"S.Croce\", Via Roma 10, Calvenzano" },
-            { giornata: 1, data: "2026-10-03 15:00", match: "Colognese vs Oratorio Cologno", campo: "Stadio Comunale Facchetti 2, Cologno al Serio" },
-            { giornata: 1, data: "2026-10-03 15:00", match: "Accademia PBC vs Caravaggio", campo: "Campo Comunale N. 2, Pontirolo Nuovo" },
-            { giornata: 1, data: "2026-10-04 11:00", match: "Virtusciseranobergamo B vs Atalanta B", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
-            { giornata: 1, data: "2026-10-03 15:00", match: "A.C.O.S. Treviglio vs Brignanese", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-
-            { giornata: 2, data: "2026-10-10 15:00", match: "Atalanta B vs A.C.O.S. Treviglio", campo: "C.S. Comunale N.1, Via Oratorio 20, Brembate" },
-            { giornata: 2, data: "2026-10-10 15:00", match: "Caravaggio vs Virtusciseranobergamo B", campo: "C.S. Comunale, Via G. Castoldi 11, Caravaggio" },
-            { giornata: 2, data: "2026-10-10 15:00", match: "Oratorio Cologno vs Accademia PBC", campo: "Oratorio San Giovanni Bosco, Via Manzoni 15, Cologno al Serio" },
-            { giornata: 2, data: "2026-10-10 15:00", match: "Trevigliese vs Colognese", campo: "C.S. Comunale \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 2, data: "2026-10-10 15:00", match: "Brignanese vs Or. Calvenzano", campo: "Centro Sportivo Comunale, Via Olimpia, Brignano Gera d'Adda" },
-
-            { giornata: 3, data: "2026-10-17 15:00", match: "Colognese vs Or. Calvenzano", campo: "Stadio Comunale Facchetti 2, Cologno al Serio" },
-            { giornata: 3, data: "2026-10-17 15:00", match: "Accademia PBC vs Trevigliese", campo: "Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo" },
-            { giornata: 3, data: "2026-10-17 15:00", match: "Virtusciseranobergamo B vs Oratorio Cologno", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
-            { giornata: 3, data: "2026-10-17 15:00", match: "A.C.O.S. Treviglio vs Caravaggio", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 3, data: "2026-10-17 15:00", match: "Brignanese vs Atalanta B", campo: "Centro Sportivo Comunale, Via Olimpia, Brignano Gera d'Adda" },
-
-            { giornata: 4, data: "2026-10-24 15:00", match: "Caravaggio vs Atalanta B", campo: "C.S. Comunale, Via G. Castoldi 11, Caravaggio" },
-            { giornata: 4, data: "2026-10-24 15:00", match: "Oratorio Cologno vs A.C.O.S. Treviglio", campo: "Oratorio San Giovanni Bosco, Via Manzoni 15, Cologno al Serio" },
-            { giornata: 4, data: "2026-10-24 15:00", match: "Trevigliese vs Virtusciseranobergamo B", campo: "C.S. Comunale \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 4, data: "2026-10-24 15:00", match: "Or. Calvenzano vs Accademia PBC", campo: "Oratorio S.Croce, Via Roma 10, Calvenzano" },
-            { giornata: 4, data: "2026-10-24 15:00", match: "Colognese vs Brignanese", campo: "Stadio Comunale Facchetti 2, Cologno al Serio" },
-
-            { giornata: 5, data: "2026-10-31 15:00", match: "Accademia PBC vs Colognese", campo: "Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo" },
-            { giornata: 5, data: "2026-10-31 15:00", match: "Virtusciseranobergamo B vs Or. Calvenzano", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
-            { giornata: 5, data: "2026-10-31 15:00", match: "A.C.O.S. Treviglio vs Trevigliese", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 5, data: "2026-10-31 15:00", match: "Atalanta B vs Oratorio Cologno", campo: "C.S. Comunale N.1, Via Oratorio 20, Brembate" },
-            { giornata: 5, data: "2026-10-31 15:00", match: "Brignanese vs Caravaggio", campo: "Centro Sportivo Comunale, Via Olimpia, Brignano Gera d'Adda" },
-
-            { giornata: 6, data: "2026-11-07 15:00", match: "Oratorio Cologno vs Caravaggio", campo: "Oratorio San Giovanni Bosco, Via Manzoni 15, Cologno al Serio" },
-            { giornata: 6, data: "2026-11-07 15:00", match: "Trevigliese vs Atalanta B", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 6, data: "2026-11-07 15:00", match: "Or. Calvenzano vs A.C.O.S. Treviglio", campo: "Oratorio S.Croce, Via Roma 10, Calvenzano" },
-            { giornata: 6, data: "2026-11-07 15:00", match: "Colognese vs Virtusciseranobergamo B", campo: "Stadio Comunale Facchetti 2, Cologno al Serio" },
-            { giornata: 6, data: "2026-11-07 15:00", match: "Accademia PBC vs Brignanese", campo: "Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo" },
-
-            { giornata: 7, data: "2026-11-14 15:00", match: "Virtusciseranobergamo B vs Accademia PBC", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
-            { giornata: 7, data: "2026-11-14 15:00", match: "A.C.O.S. Treviglio vs Colognese", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 7, data: "2026-11-14 15:00", match: "Atalanta B vs Or. Calvenzano", campo: "C.S. Comunale N.1, Via Oratorio 20, Brembate" },
-            { giornata: 7, data: "2026-11-14 15:00", match: "Caravaggio vs Trevigliese", campo: "C.S. Comunale, Via G. Castoldi 11, Caravaggio" },
-            { giornata: 7, data: "2026-11-14 15:00", match: "Brignanese vs Oratorio Cologno", campo: "Centro Sportivo Comunale, Via Olimpia, Brignano Gera d'Adda" },
-
-            { giornata: 8, data: "2026-11-21 15:00", match: "Trevigliese vs Oratorio Cologno", campo: "C.S. Comunale \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 8, data: "2026-11-21 15:00", match: "Or. Calvenzano vs Caravaggio", campo: "Oratorio S.Croce, Via Roma 10, Calvenzano" },
-            { giornata: 8, data: "2026-11-21 15:00", match: "Colognese vs Atalanta B", campo: "Stadio Comunale Facchetti 2, Cologno al Serio" },
-            { giornata: 8, data: "2026-11-21 15:00", match: "Accademia PBC vs A.C.O.S. Treviglio", campo: "Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo" },
-            { giornata: 8, data: "2026-11-21 15:00", match: "Virtusciseranobergamo B vs Brignanese", campo: "C.S. Comunale, Via Mazzini 13, Ciserano" },
-
-            { giornata: 9, data: "2026-11-28 15:00", match: "A.C.O.S. Treviglio vs Virtusciseranobergamo B", campo: "C.S. \"A. Mazza\", Via Malgari 1, Treviglio" },
-            { giornata: 9, data: "2026-11-28 15:00", match: "Atalanta B vs Accademia PBC", campo: "C.S. Comunale N.1, Via Oratorio 20, Brembate" },
-            { giornata: 9, data: "2026-11-28 15:00", match: "Caravaggio vs Colognese", campo: "C.S. Comunale, Via G. Castoldi 11, Caravaggio" },
-            { giornata: 9, data: "2026-11-28 15:00", match: "Oratorio Cologno vs Or. Calvenzano", campo: "Oratorio San Giovanni Bosco, Via Manzoni 15, Cologno al Serio" },
-            { giornata: 9, data: "2026-11-28 15:00", match: "Brignanese vs Trevigliese", campo: "Centro Sportivo Comunale, Via Olimpia, Brignano Gera d'Adda" }
+        // Database unificato dei campi
+        const tuttiICampi = [
+            { categoria: 's7', squadra: 'Calcio a 7 (Vecchia Guardia)', nome: 'C.S. Comunale Sesto', indirizzo: 'Via Sport 1, Sesto San Giovanni' },
+            { categoria: 's7', squadra: 'Calcio a 7 (Vecchia Guardia)', nome: 'Centro Sportivo Lombardia', indirizzo: 'Via Lombardia 10, Milano' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Stadio Comunale Melzo', indirizzo: 'Via Roma 15, Melzo' },
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'C.S. Comunale "A. Mazza"', indirizzo: 'Via Malgari 1, Treviglio' },
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'Campo Comunale N. 2 Pontirolo', indirizzo: 'Via Armando Diaz, Pontirolo Nuovo' }
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Gestione Tab interattivi affidabile
+            // Gestione Tab
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const target = this.getAttribute('data-target');
-                    
                     document.querySelectorAll('.section').forEach(sec => {
                         sec.style.display = 'none';
                         sec.classList.remove('active');
                     });
-                    
                     buttons.forEach(b => b.classList.remove('active'));
-                    
                     const targetSec = document.getElementById(target);
                     if (targetSec) {
                         targetSec.style.display = 'block';
@@ -267,71 +240,103 @@
                 });
             });
 
-            // 1. Home - Prossima Partita con box giallo e link Google Maps
-            var containerHome = document.getElementById('nextMatchContainer');
+            renderHome();
+            renderCalendar(tutteLePartite);
+            renderFields(tuttiICampi);
+        });
+
+        function renderHome() {
+            var container = document.getElementById('nextMatchesContainer');
+            container.innerHTML = '';
+            var categorie = ['s7', 'over', 'pulcini'];
             var oggi = new Date();
-            var FUTURE = listaPartite.filter(function(m) {
-                return m.match.includes('Trevigliese') && new Date(m.data) >= oggi;
+
+            categorie.forEach(cat => {
+                var futureMatches = tutteLePartite.filter(m => m.categoria === cat && new Date(m.data) >= oggi);
+                futureMatches.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+                if (futureMatches.length > 0) {
+                    var next = futureMatches[0];
+                    var d = new Date(next.data);
+                    var dataFmt = d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+                    var oraFmt = d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                    var mapsUrl = "https://maps.google.com/?q=" + encodeURIComponent(next.campo);
+
+                    var div = document.createElement('div');
+                    div.className = 'card ' + cat;
+                    div.innerHTML = '<div class="card-header">' +
+                        '<span><span class="badge ' + cat + '">' + next.categoria.toUpperCase() + '</span> ' + next.catNome + '</span>' +
+                        '<span>📅 ' + dataFmt + ' ⏰ ' + oraFmt + '</span>' +
+                        '</div>' +
+                        '<div class="card-title">' + next.match + '</div>' +
+                        '<div class="card-details">📍 <a href="' + mapsUrl + '" target="_blank">' + next.campo + ' 🗺️</a></div>';
+                    container.appendChild(div);
+                }
             });
-            FUTURE.sort(function(a, b) { return new Date(a.data) - new Date(b.data); });
+        }
 
-            if (FUTURE.length > 0) {
-                var next = FUTURE[0];
-                var d = new Date(next.data);
-                var dataFmt = d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-                var oraFmt = d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                var mapsUrl = "https://maps.google.com/?q=" + encodeURIComponent(next.campo);
+        function renderCalendar(partite) {
+            var container = document.getElementById('calendarList');
+            container.innerHTML = '';
+            partite.sort((a, b) => new Date(a.data) - new Date(b.data));
 
-                containerHome.innerHTML = '<div class="next-match-banner">' +
-                    '<h3>🔥 Prossima Partita Trevigliese</h3>' +
-                    '<div class="match-vs">' + next.match + '</div>' +
-                    '<div class="match-info">📅 ' + dataFmt + ' - ⏰ ' + oraFmt + '<br>📍 <a href="' + mapsUrl + '" target="_blank">' + next.campo + ' 🗺️ (Apri Mappa)</a></div>' +
-                    '</div>';
-            } else {
-                containerHome.innerHTML = '<div class="card"><p>Nessuna partita futura trovata.</p></div>';
-            }
-
-            // 2. Calendario Completo
-            var containerCal = document.getElementById('calendarList');
-            containerCal.innerHTML = '';
-            listaPartite.sort(function(a, b) { return new Date(a.data) - new Date(b.data); });
-
-            for (var k = 0; k < listaPartite.length; k++) {
-                var m = listaPartite[k];
-                var isTrev = m.match.includes('Trevigliese');
+            partite.forEach(m => {
                 var dObj = new Date(m.data);
-                var dStr = dObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+                var dStr = dObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
                 var tStr = dObj.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                var mapsUrlCal = "https://maps.google.com/?q=" + encodeURIComponent(m.campo);
+                var mapsUrl = "https://maps.google.com/?q=" + encodeURIComponent(m.campo);
 
                 var div = document.createElement('div');
-                div.className = isTrev ? 'card highlight' : 'card';
-                div.innerHTML = '<div class="card-header"><span>Giornata ' + m.giornata + (isTrev ? ' ⭐ (TREVIGLIESE)' : '') + '</span><span>📅 ' + dStr + ' - ⏰ ' + tStr + '</span></div>' +
-                    '<div class="card-title" style="color: ' + (isTrev ? '#0d47a1' : 'inherit') + '">' + m.match + '</div>' +
-                    '<div class="card-details">📍 <a href="' + mapsUrlCal + '" target="_blank">' + m.campo + ' 🗺️</a></div>';
-                containerCal.appendChild(div);
+                div.className = 'card ' + m.categoria;
+                div.innerHTML = '<div class="card-header">' +
+                    '<span><span class="badge ' + m.categoria + '">' + m.categoria.toUpperCase() + '</span> ' + m.catNome + '</span>' +
+                    '<span>📅 ' + dStr + ' - ⏰ ' + tStr + '</span>' +
+                    '</div>' +
+                    '<div class="card-title">' + m.match + '</div>' +
+                    '<div class="card-details">📍 <a href="' + mapsUrl + '" target="_blank">' + m.campo + ' 🗺️</a></div>';
+                container.appendChild(div);
+            });
+        }
+
+        function filterCalendar(cat, btn) {
+            document.querySelectorAll('#calendar .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (cat === 'all') {
+                renderCalendar(tutteLePartite);
+            } else {
+                var filtrate = tutteLePartite.filter(m => m.categoria === cat);
+                renderCalendar(filtrate);
             }
+        }
 
-            // 3. Sedi Campi con indirizzi cliccabili
-            var containerFields = document.getElementById('fieldsList');
-            containerFields.innerHTML = '';
-            listaCampi.sort(function(a, b) { return a.society.localeCompare(b.society); });
+        function renderFields(campi) {
+            var container = document.getElementById('fieldsList');
+            container.innerHTML = '';
 
-            for (var l = 0; l < listaCampi.length; l++) {
-                var f = listaCampi[l];
-                var isTrevField = f.society.includes('Trevigliese');
-                var fullAddress = f.indirizzo + ", " + f.loc;
-                var mapsUrlField = "https://maps.google.com/?q=" + encodeURIComponent(fullAddress);
+            campi.forEach(f => {
+                var mapsUrl = "https://maps.google.com/?q=" + encodeURIComponent(f.indirizzo);
 
-                var divF = document.createElement('div');
-                divF.className = isTrevField ? 'card highlight' : 'card';
-                divF.innerHTML = '<div class="card-title">' + f.society + '</div>' +
-                    '<div class="card-details">🏟️ <strong>Denominazione:</strong> ' + f.den + ' (Campo n. ' + f.campo + ')<br>' +
-                    '📍 <strong>Indirizzo:</strong> <a href="' + mapsUrlField + '" target="_blank">' + fullAddress + ' 🗺️ (Naviga)</a><br>' +
-                    '⏰ <strong>Orario Fissato:</strong> ' + f.giornata + ' ore ' + f.ora + '</div>';
-                containerFields.appendChild(divF);
+                var div = document.createElement('div');
+                div.className = 'card ' + f.categoria;
+                div.innerHTML = '<div class="card-header"><span class="badge ' + f.categoria + '">' + f.squadra + '</span></div>' +
+                    '<div class="card-title">' + f.nome + '</div>' +
+                    '<div class="card-details">📍 <a href="' + mapsUrl + '" target="_blank">' + f.indirizzo + ' 🗺️ (Apri Navigatore)</a></div>';
+                container.appendChild(div);
+            });
+        }
+
+        function filterFields(cat, btn) {
+            document.querySelectorAll('#fields .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (cat === 'all') {
+                renderFields(tuttiICampi);
+            } else {
+                var filtrati = tuttiICampi.filter(f => f.categoria === cat);
+                renderFields(filtrati);
             }
-        });
+        }
     </script>
 </body>
 </html>
