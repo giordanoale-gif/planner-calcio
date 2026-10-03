@@ -202,22 +202,50 @@
     </div>
 
     <script>
-        // Database unificato delle partite (Esempi per le 3 categorie)
+        // Database unificato delle partite (Over 40 reale + Pulcini 2017 reale + Esempio Calcio a 7)
         const tutteLePartite = [
-            { id: 1, categoria: 's7', catNome: 'Calcio a 7 (Vecchia Guardia)', data: '2026-10-05 21:00', match: 'Vecchia Guardia vs Real Sesto', campo: 'C.S. Comunale, Via Sport 1, Sesto San Giovanni' },
-            { id: 2, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-06 20:30', match: 'GL Sporting vs Atletico Over', campo: 'Stadio Comunale, Via Roma 15, Melzo' },
-            { id: 3, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-10 15:00', match: 'Trevigliese vs Colognese', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
-            { id: 4, categoria: 's7', catNome: 'Calcio a 7 (Vecchia Guardia)', data: '2026-10-12 21:00', match: 'Brera S7 vs Vecchia Guardia', campo: 'Centro Sportivo Lombardia, Milano' },
-            { id: 5, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-17 15:00', match: 'Accademia PBC vs Trevigliese', campo: 'Campo Comunale N. 2, Via Armando Diaz, Pontirolo Nuovo' }
+            // Calcio a 11 Over 40 (GL Sporting) - Girone di Andata
+            { id: 101, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-09-25 20:00', match: 'GL Sporting vs RSA TEAM', campo: 'Monterosso, Bergamo' },
+            { id: 102, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-02 20:30', match: 'GL Sporting vs FENAOMENI F.C.', campo: 'Celadina, Bergamo' },
+            { id: 103, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-09 20:30', match: 'GL Sporting vs SITA\' OLTA', campo: 'Celadina, Bergamo' },
+            { id: 104, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-14 20:30', match: 'GL Sporting vs HAKUNA MATATA', campo: 'Torre de Roveri' },
+            { id: 105, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-23 21:00', match: 'GL Sporting vs AMICI PONTERANICA', campo: 'Ponteranica' },
+            { id: 106, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-10-30 22:00', match: 'GL Sporting vs ASD CARVICO', campo: 'Carvico' },
+            { id: 107, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-11-06 20:00', match: 'GL Sporting vs ASD COMUN NUOVO', campo: 'Celadina, Bergamo' },
+            { id: 108, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-11-12 20:00', match: 'GL Sporting vs NEWSARI', campo: 'Presezzo' },
+            { id: 109, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-11-27 21:00', match: 'GL Sporting vs LOS RONNY S.C.', campo: 'Celadina, Bergamo' },
+            { id: 110, categoria: 'over', catNome: 'Calcio a 11 Over 40 (GL Sporting)', data: '2026-11-30 21:00', match: 'GL Sporting vs SAN SEBASTIAN SOCCER', campo: 'Comun Nuovo' },
+
+            // Pulcini 2017 (Trevigliese Bianchi) - Girone G Andata
+            { id: 201, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-03 14:30', match: 'Trevigliese vs Brignanese', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+            { id: 202, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-10 14:30', match: 'Caravaggio vs Trevigliese', campo: 'C.S. Comunale Campo N.2 E.A., Via G. Castoldi 11, Caravaggio' },
+            { id: 203, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-17 14:30', match: 'Trevigliese vs Or. Calvenzano', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+            { id: 204, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-24 14:30', match: 'Colognese vs Trevigliese', campo: 'Stadio Comunale Facchetti 2 E.A., Via delle Galose/Betosca, Cologno al Serio' },
+            { id: 205, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-10-31 14:30', match: 'Trevigliese vs Accademia PBC', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+            { id: 206, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-11-07 14:30', match: 'Virtusciseranobg B vs Trevigliese', campo: 'Campo N.2 E.A. C.S. Comunale, Via Mazzini 13, Ciserano' },
+            { id: 207, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-11-14 14:30', match: 'Trevigliese vs A.C.O.S. Treviglio', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+            { id: 208, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-11-21 14:30', match: 'Atalanta B vs Trevigliese', campo: 'C.S. Comunale N.1 (E.A), Via Oratorio 20, Brembate' },
+            { id: 209, categoria: 'pulcini', catNome: 'Pulcini 2017 (Trevigliese Bianchi)', data: '2026-11-28 14:30', match: 'Trevigliese vs Oratorio Cologno', campo: 'C.S. Comunale "A. Mazza", Via Malgari 1, Treviglio' },
+
+            // Calcio a 7 (Vecchia Guardia) - Esempio (inserire i dati reali appena disponibili)
+            { id: 301, categoria: 's7', catNome: 'Calcio a 7 (Vecchia Guardia)', data: '2026-10-05 21:00', match: 'Vecchia Guardia vs Real Sesto', campo: 'C.S. Comunale, Via Sport 1, Sesto San Giovanni' }
         ];
 
         // Database unificato dei campi
         const tuttiICampi = [
-            { categoria: 's7', squadra: 'Calcio a 7 (Vecchia Guardia)', nome: 'C.S. Comunale Sesto', indirizzo: 'Via Sport 1, Sesto San Giovanni' },
-            { categoria: 's7', squadra: 'Calcio a 7 (Vecchia Guardia)', nome: 'Centro Sportivo Lombardia', indirizzo: 'Via Lombardia 10, Milano' },
-            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Stadio Comunale Melzo', indirizzo: 'Via Roma 15, Melzo' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Monterosso', indirizzo: 'Monterosso, Bergamo' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Celadina', indirizzo: 'Celadina, Bergamo' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Torre de Roveri', indirizzo: 'Torre de Roveri' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Ponteranica', indirizzo: 'Ponteranica' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Carvico', indirizzo: 'Carvico' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Presezzo', indirizzo: 'Presezzo' },
+            { categoria: 'over', squadra: 'Calcio a 11 Over 40 (GL Sporting)', nome: 'Campo Comun Nuovo', indirizzo: 'Comun Nuovo' },
             { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'C.S. Comunale "A. Mazza"', indirizzo: 'Via Malgari 1, Treviglio' },
-            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'Campo Comunale N. 2 Pontirolo', indirizzo: 'Via Armando Diaz, Pontirolo Nuovo' }
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'C.S. Comunale Campo N.2 E.A.', indirizzo: 'Via G. Castoldi 11, Caravaggio' },
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'Stadio Comunale Facchetti 2 E.A.', indirizzo: 'Via delle Galose/Betosca, Cologno al Serio' },
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'Campo N.2 E.A. C.S. Comunale', indirizzo: 'Via Mazzini 13, Ciserano' },
+            { categoria: 'pulcini', squadra: 'Pulcini 2017 (Trevigliese Bianchi)', nome: 'C.S. Comunale N.1 (E.A)', indirizzo: 'Via Oratorio 20, Brembate' },
+            { categoria: 's7', squadra: 'Calcio a 7 (Vecchia Guardia)', nome: 'C.S. Comunale Sesto', indirizzo: 'Via Sport 1, Sesto San Giovanni' }
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -321,7 +349,7 @@
                 div.className = 'card ' + f.categoria;
                 div.innerHTML = '<div class="card-header"><span class="badge ' + f.categoria + '">' + f.squadra + '</span></div>' +
                     '<div class="card-title">' + f.nome + '</div>' +
-                    '<div class="card-details">📍 <a href="' + mapsUrl + '" target="_blank">' + f.indirizzo + ' 🗺️ (Apri Navigatore)</a></div>';
+                    '<div class="card-details">📍 <a href="' + mapsUrl + '" target="_blank">' + f.indirizzo + ' 🗺️️ (Apri Navigatore)</a></div>';
                 container.appendChild(div);
             });
         }
