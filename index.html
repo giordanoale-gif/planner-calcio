@@ -407,6 +407,197 @@ h2.section-title{
 }
 .standings-fallback a{color:var(--campo); font-weight:700; text-decoration:none;}
 
+.backup-row{
+  display:flex;
+  gap:8px;
+  padding:0 14px 14px;
+}
+.backup-row button, .backup-row .import-label{
+  flex:1;
+  text-align:center;
+  font-size:11px;
+  font-weight:700;
+  color:var(--inchiostro-soft);
+  background:var(--riga);
+  border:none;
+  border-radius:8px;
+  padding:7px 4px;
+  cursor:pointer;
+}
+.import-label{ position:relative; overflow:hidden; display:block; }
+.import-label input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+.cloud-status{
+  font-size:10px;
+  font-weight:700;
+  padding:3px 8px;
+  border-radius:10px;
+  background:var(--riga);
+  color:var(--inchiostro-soft);
+}
+.cloud-status.synced{ background:#e3f1e6; color:var(--campo-deep); }
+.cloud-status.error{ background:#f6e2e2; color:#8c2b2b; }
+
+.stat-row{ display:flex; }
+.stat-card{
+  flex:1;
+  text-align:center;
+  padding:14px 6px;
+  border-right:1px solid var(--riga);
+}
+.stat-card:last-child{border-right:none;}
+.stat-value{ font-size:24px; font-weight:800; color:var(--campo-deep); line-height:1; }
+.stat-label{ font-size:10.5px; color:var(--inchiostro-soft); margin-top:5px; line-height:1.25; }
+
+.scorer-row{ border-bottom:1px solid var(--riga); }
+.scorer-row:last-child{ border-bottom:none; }
+.scorer-row-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.scorer-name{ font-size:13px; font-weight:600; }
+.scorer-row.mine{ background:#fdf3e2; }
+.scorer-row.mine .scorer-name{ font-weight:800; color:#9a6a0a; }
+.scorer-row.mine .scorer-goals{ color:#9a6a0a; }
+.son-tag{
+  display:inline-block;
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.02em;
+  color:#fff;
+  background:#c98a12;
+  padding:2px 6px;
+  border-radius:7px;
+  margin-left:6px;
+  vertical-align:1px;
+}
+.mio-figlio{ font-weight:800; color:#9a6a0a; }
+.scorer-chip.mine{ background:#fdf3e2; color:#9a6a0a; }
+.scorer-goals{ font-size:14px; font-weight:800; color:var(--campo-deep); }
+.scorer-detail{ padding:0 14px 10px; }
+.scorer-detail-item{ font-size:11.5px; color:var(--inchiostro-soft); padding:3px 0; }
+.scorer-detail-item.empty{ font-style:italic; }
+
+.match-result-row{ border-bottom:1px solid var(--riga); padding:12px 14px; }
+.match-result-row:last-child{ border-bottom:none; }
+.mrr-head{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.mrr-info{ display:flex; align-items:baseline; gap:8px; min-width:0; flex:1; cursor:pointer; }
+.mrr-giornata{ font-size:11px; font-weight:800; color:var(--inchiostro-soft); flex:none; }
+.mrr-title{ font-size:13px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.edit-toggle-btn{
+  flex:none;
+  font-size:11px;
+  font-weight:700;
+  color:var(--campo);
+  background:var(--riga);
+  border:none;
+  border-radius:14px;
+  padding:5px 11px;
+  cursor:pointer;
+}
+.mrr-chips{ display:flex; gap:7px; margin-top:8px; flex-wrap:wrap; cursor:pointer; }
+
+.tempo-detail{ margin-top:10px; border-top:1px solid var(--riga); padding-top:8px; }
+.tempo-detail-row{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:12px; }
+.tdr-label{ color:var(--inchiostro-soft); font-weight:600; }
+.tdr-score{ font-weight:700; padding:2px 8px; border-radius:8px; font-size:11.5px; }
+.tdr-score.tdr-none{ background:#f1efe8; color:var(--inchiostro-soft); font-weight:600; }
+.tdr-scorers{ font-size:11px; color:var(--inchiostro-soft); font-style:italic; margin:-2px 0 4px; padding-left:2px; }
+.risultato-chip{
+  font-size:11px;
+  font-weight:700;
+  padding:3px 9px;
+  border-radius:10px;
+}
+.risultato-chip.esito-v, .tdr-score.esito-v{ background:#e3f1e6; color:var(--campo-deep); }
+.risultato-chip.esito-p, .tdr-score.esito-p{ background:#eceae2; color:var(--inchiostro-soft); }
+.risultato-chip.esito-s, .tdr-score.esito-s{ background:#f6e2e2; color:#8c2b2b; }
+.risultato-chip.esito-none{ background:#f1efe8; color:var(--inchiostro-soft); }
+
+.tempo-editor{ margin-top:12px; border-top:1px solid var(--riga); padding-top:10px; }
+.tempo-edit-row{ padding:9px 0; border-bottom:1px dashed var(--riga); }
+.tempo-edit-row:last-of-type{ border-bottom:none; }
+.tempo-edit-head{ display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:700; margin-bottom:6px; }
+.tempo-free-tag{ font-size:9.5px; font-weight:700; color:var(--inchiostro-soft); background:var(--riga); padding:1px 6px; border-radius:7px; margin-left:5px; }
+.tempo-for-display{ font-size:11.5px; color:var(--campo-deep); font-weight:700; }
+.tempo-edit-controls{ display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.tempo-edit-controls label{ font-size:11.5px; color:var(--inchiostro-soft); flex:1; }
+.tempo-edit-controls input{
+  width:60px;
+  border:1px solid var(--riga);
+  border-radius:7px;
+  padding:5px 7px;
+  font-size:13px;
+  font-family:inherit;
+}
+.scorer-add-row{ display:flex; gap:6px; margin-bottom:6px; }
+.scorer-add-row select{
+  flex:1;
+  min-width:0;
+  border:1px solid var(--riga);
+  border-radius:7px;
+  padding:5px 6px;
+  font-size:12px;
+  font-family:inherit;
+  background:var(--carta);
+}
+.scorer-add-row input{
+  width:48px;
+  border:1px solid var(--riga);
+  border-radius:7px;
+  padding:5px 6px;
+  font-size:12px;
+  font-family:inherit;
+}
+.add-scorer-btn{
+  flex:none;
+  font-size:11.5px;
+  font-weight:700;
+  color:#fff;
+  background:var(--campo);
+  border:none;
+  border-radius:7px;
+  padding:5px 10px;
+  cursor:pointer;
+}
+.scorer-chips{ display:flex; flex-wrap:wrap; gap:5px; }
+.scorer-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  font-weight:600;
+  background:var(--verde-chiaro,#eef3ec);
+  color:var(--campo-deep);
+  padding:3px 4px 3px 9px;
+  border-radius:12px;
+}
+.scorer-chip button{
+  border:none;
+  background:none;
+  color:var(--inchiostro-soft);
+  font-size:13px;
+  line-height:1;
+  cursor:pointer;
+  padding:0 4px;
+}
+.editor-actions{ display:flex; gap:8px; margin-top:10px; }
+.save-result-btn, .cancel-result-btn{
+  flex:1;
+  font-size:12.5px;
+  font-weight:700;
+  border-radius:9px;
+  padding:9px 0;
+  border:none;
+  cursor:pointer;
+}
+.save-result-btn{ background:var(--campo); color:#fff; }
+.cancel-result-btn{ background:var(--riga); color:var(--inchiostro-soft); }
+
 /* ---------- Conflitti ---------- */
 .settings-box{
   background:var(--carta);
@@ -626,7 +817,62 @@ nav.tabbar{
   <nav class="tabbar" id="tabbar"></nav>
 </div>
 
-<script>
+<script type="module">
+/* ============== FIREBASE (database cloud per i risultati Trevigliese) ==============
+   1. Vai su https://console.firebase.google.com/, crea un progetto gratuito (nessuna carta
+      richiesta per il piano Spark).
+   2. Nel menu laterale apri "Firestore Database" > "Crea database" > scegli una regione
+      vicina (es. europe-west) > parti in modalità test.
+   3. Vai su "Regole" (Rules) nel database e sostituisci tutto con:
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /trevigliese/{docId} {
+              allow read, write: if true;
+            }
+          }
+        }
+      (altrimenti la modalità test si blocca da sola dopo 30 giorni)
+   4. Nel menu in alto a sinistra, icona a forma di ingranaggio > "Impostazioni progetto" >
+      scorri fino a "Le tue app" > icona "</>" (Web) > registra una app (basta un nome) >
+      copia l'oggetto "firebaseConfig" che ti viene mostrato e sostituiscilo qui sotto.
+   Le chiavi qui sotto NON sono segrete: non danno accesso diretto ai dati, servono solo a
+   identificare il progetto. La vera protezione è nelle "Regole" del punto 3.
+*/
+const firebaseConfig = {
+  apiKey: "AIzaSyDOJ0jsZvgSDrwrd4Mz4lFQLSqgxDP05nU",
+  authDomain: "football-planner-a76cd.firebaseapp.com",
+  projectId: "football-planner-a76cd",
+  storageBucket: "football-planner-a76cd.firebasestorage.app",
+  messagingSenderId: "784019927126",
+  appId: "1:784019927126:web:466143a4948a6d30c40bf7"
+};
+
+// Caricamento "dinamico" e protetto: se la rete blocca gstatic.com (es. anteprime in
+// sandbox) o le chiavi sono ancora i placeholder, l'app continua a funzionare lo stesso
+// in modalità solo-locale, invece di rompersi del tutto.
+let db = null;
+let firebaseAttivo = false;
+let RISULTATI_DOC = null;
+let fsGetDoc = null, fsSetDoc = null, fsServerTimestamp = null;
+
+async function initFirebase(){
+  try {
+    const appMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    const fsMod  = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+    const fbApp = appMod.initializeApp(firebaseConfig);
+    db = fsMod.getFirestore(fbApp);
+    RISULTATI_DOC = fsMod.doc(db, "trevigliese", "risultati");
+    fsGetDoc = fsMod.getDoc;
+    fsSetDoc = fsMod.setDoc;
+    fsServerTimestamp = fsMod.serverTimestamp;
+    firebaseAttivo = true;
+  } catch(e){
+    console.warn('Firebase non disponibile in questo ambiente — i dati restano solo in questa sessione.', e);
+    firebaseAttivo = false;
+  }
+}
+
 /* ============== ICONE (inline, nessuna emoji) ============== */
 const ICO = {
   pin: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-7.58 7-12a7 7 0 10-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>`,
@@ -967,6 +1213,146 @@ function renderTabbar(){
   });
 }
 
+/* ============== RISULTATI TREVIGLIESE (salvati su Firestore) ============== */
+// Rosa Pulcini 2017
+const PLAYERS = [
+  "Berardi Tommaso","Campaore Rayan","Frigerio Samuele","Fumagalli Riccardo",
+  "Giombelli Nicholas","Giordano Mattia","Kamal Joussef","Mayer Nicolò",
+  "Miedico Federico","Mihaila Paul","Owoosu Jeremi","Piscitelli Edoardo",
+  "Tahrir Yassine","Tarar Shazam","Zangari Tommaso"
+];
+
+const MIO_FIGLIO = "Giordano Mattia";
+function isMioFiglio(name){ return name === MIO_FIGLIO; }
+function playerLabel(name){ return isMioFiglio(name) ? `<span class="mio-figlio">${name}</span>` : name; }
+
+// Cache in memoria: tutte le funzioni di calcolo/rendering restano SINCRONE e leggono
+// da qui. All'avvio la popoliamo da Firestore (asincrono); ogni salvataggio aggiorna
+// prima la cache (così l'interfaccia è sempre immediata) e poi scrive sul cloud in
+// background. Se Firestore non è configurato o la rete è assente, la cache resta
+// comunque utilizzabile per la sessione corrente — l'app non si blocca mai.
+let resultsCache = {};
+let cloudStatus = 'loading'; // 'loading' | 'synced' | 'offline' | 'error'
+
+async function caricaRisultatiDalCloud(){
+  if (!firebaseAttivo){
+    cloudStatus = 'offline';
+    return;
+  }
+  try {
+    const snap = await fsGetDoc(RISULTATI_DOC);
+    resultsCache = snap.exists() ? (snap.data().data || {}) : {};
+    cloudStatus = 'synced';
+  } catch(e){
+    console.error('Errore caricamento risultati da Firestore:', e);
+    cloudStatus = 'error';
+  }
+  // se l'utente è già sul tab Classifiche > Trevigliese, aggiorna la vista coi dati freschi
+  const chipAttiva = document.querySelector('#standings-chips .chip.active');
+  if (chipAttiva && chipAttiva.dataset.sfilter==='mattia'){
+    renderMattiaStandings();
+  }
+}
+
+function loadAllResults(){ return resultsCache; }
+
+function saveAllResults(all){
+  resultsCache = all;
+  if (!firebaseAttivo){ cloudStatus='offline'; return; }
+  fsSetDoc(RISULTATI_DOC, { data: all, updatedAt: fsServerTimestamp() })
+    .then(()=>{ cloudStatus='synced'; })
+    .catch(e=>{
+      cloudStatus='error';
+      console.error('Errore salvataggio su Firestore:', e);
+      alert('Il salvataggio sul cloud non è riuscito (controlla la connessione). La modifica resta visibile in questa sessione ma non è ancora al sicuro — riprova a salvare.');
+    });
+}
+function matchKeyFor(m){ return 'g' + m.giornata; }
+function emptyTempi(){ return [0,1,2,3].map(()=>({ against:'', scorers:[] })); }
+function getMatchData(key){
+  const all = loadAllResults();
+  const d = all[key];
+  if (!d || !d.tempi) return { tempi: emptyTempi() };
+  while (d.tempi.length < 4) d.tempi.push({ against:'', scorers:[] });
+  return d;
+}
+function setMatchData(key, data){
+  const all = loadAllResults();
+  all[key] = data;
+  saveAllResults(all);
+}
+
+function tempoGolFatti(t){ return (t.scorers||[]).reduce((s,x)=>s+Number(x.goals||0),0); }
+function tempoGiocato(t){ return t.against !== '' && t.against !== null && t.against !== undefined && !isNaN(Number(t.against)); }
+function tempoEsito(t){
+  const f = tempoGolFatti(t), a = Number(t.against);
+  if (f>a) return 'V';
+  if (f<a) return 'S';
+  return 'P';
+}
+function esitoDaConteggio(v,s){ if (v>s) return 'V'; if (s>v) return 'S'; return 'P'; }
+
+// Calcola risultato aggregato "primi N tempi" di una partita (N=3 o N=4)
+function calcolaAggregato(tempi, n){
+  const slice = tempi.slice(0,n);
+  let golFatti=0, golSubiti=0, v=0, p=0, s=0, punti=0, giocati=0;
+  slice.forEach(t=>{
+    if (!tempoGiocato(t)) return;
+    giocati++;
+    const f = tempoGolFatti(t), a = Number(t.against);
+    golFatti+=f; golSubiti+=a;
+    const e = tempoEsito(t);
+    if (e==='V'){ v++; punti+=1; } else if (e==='P'){ p++; punti+=1; } else { s++; }
+  });
+  if (giocati===0) return null;
+  return { golFatti, golSubiti, esito: esitoDaConteggio(v,s), punti, giocati, v, p, s };
+}
+
+function calcolaMatch(data){
+  return { tre: calcolaAggregato(data.tempi,3), quattro: calcolaAggregato(data.tempi,4) };
+}
+
+function calcolaClassificaSquadra(mattiaMatches){
+  let punti3=0, punti4=0, giornateGiocate=0;
+  mattiaMatches.forEach(m=>{
+    const data = getMatchData(matchKeyFor(m));
+    const r = calcolaMatch(data);
+    if (r.tre) punti3 += r.tre.punti;
+    if (r.quattro) punti4 += r.quattro.punti;
+    if (r.tre || r.quattro) giornateGiocate++;
+  });
+  return { punti3, punti4, giornateGiocate };
+}
+
+function calcolaMarcatori(mattiaMatches){
+  const totals = {};
+  PLAYERS.forEach(p=> totals[p] = { goals:0, dettagli:[] });
+  mattiaMatches.forEach(m=>{
+    const data = getMatchData(matchKeyFor(m));
+    data.tempi.forEach((t,idx)=>{
+      (t.scorers||[]).forEach(sc=>{
+        if (!totals[sc.name]) totals[sc.name] = { goals:0, dettagli:[] };
+        const g = Number(sc.goals||0);
+        totals[sc.name].goals += g;
+        if (g>0) totals[sc.name].dettagli.push({ giornata:m.giornata, tempo:idx+1, goals:g, title:m.title });
+      });
+    });
+  });
+  return totals;
+}
+
+// stato dell'editor (solo una partita apribile alla volta, modifiche "in bozza" fino al Salva)
+let openMatchKey = null;
+let openDetailKey = null;
+let editBuffer = {};
+function ensureBuffer(key){
+  if (!editBuffer[key]){
+    const stored = getMatchData(key);
+    editBuffer[key] = JSON.parse(JSON.stringify(stored));
+  }
+  return editBuffer[key];
+}
+
 /* ============== CLASSIFICHE ============== */
 const STANDINGS_URL = {
   c7:  "https://www.bergamotornei.com/it/t-teamtable/154/campionato-nazionale-asi-bergamo-tornei-calcio-a-7/",
@@ -995,17 +1381,7 @@ function renderStandings(cat){
   const t = TEAMS[cat];
 
   if (cat === 'mattia'){
-    container.innerHTML = `
-      <div class="standings-card">
-        <div class="standings-top">
-          <span class="st-title">${badge(cat,18)}${t.label}</span>
-        </div>
-        <div class="empty-state">
-          Per i Pulcini 2017 non esiste una classifica ufficiale pubblicata — a questa età il torneo FIGC non la prevede.<br>
-          La costruiremo noi a partire dai risultati delle giornate giocate.
-        </div>
-      </div>
-    `;
+    renderMattiaStandings();
     return;
   }
 
@@ -1024,6 +1400,272 @@ function renderStandings(cat){
       </div>
     </div>
   `;
+}
+
+/* ============== PANNELLO TREVIGLIESE: punti, marcatori, editor risultati ============== */
+function esitoLabel(e){ return e==='V' ? 'Vittoria' : e==='P' ? 'Pareggio' : 'Sconfitta'; }
+function esitoClass(e){ return e==='V' ? 'esito-v' : e==='P' ? 'esito-p' : 'esito-s'; }
+
+function cloudStatusLabel(s){
+  if (s==='loading') return 'Carico dal cloud…';
+  if (s==='synced') return 'Salvato nel cloud';
+  if (s==='offline') return 'Firebase non configurato';
+  return 'Salvataggio non riuscito';
+}
+
+function renderMattiaStandings(){
+  const container = document.getElementById('standings-content');
+  const mattiaMatches = matches.filter(m=>m.cat==='mattia').sort((a,b)=>a.giornata-b.giornata);
+  const squadra = calcolaClassificaSquadra(mattiaMatches);
+  const marcatori = calcolaMarcatori(mattiaMatches);
+  const marcatoriArr = Object.entries(marcatori)
+    .map(([name,v])=>({name, ...v}))
+    .sort((a,b)=> b.goals-a.goals || a.name.localeCompare(b.name));
+
+  container.innerHTML = `
+    <div class="standings-card" style="margin-bottom:14px;">
+      <div class="standings-top">
+        <span class="st-title">${badge('mattia',18)}${TEAMS.mattia.label}</span>
+        <span class="cloud-status ${cloudStatus}">${cloudStatusLabel(cloudStatus)}</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-value">${squadra.punti3}</div><div class="stat-label">Punti<br>3 tempi</div></div>
+        <div class="stat-card"><div class="stat-value">${squadra.punti4}</div><div class="stat-label">Punti<br>4 tempi</div></div>
+        <div class="stat-card"><div class="stat-value">${squadra.giornateGiocate}/9</div><div class="stat-label">Giornate<br>giocate</div></div>
+      </div>
+      <div class="backup-row">
+        <button type="button" id="export-results-btn">Esporta dati (backup)</button>
+        <label class="import-label">Importa dati<input type="file" id="import-results-input" accept="application/json"></label>
+      </div>
+    </div>
+
+    <div class="standings-card" style="margin-bottom:14px;">
+      <div class="standings-top"><span class="st-title">Marcatori</span></div>
+      <div id="scorers-list">${marcatoriArr.map(scorerRowHtml).join('')}</div>
+    </div>
+
+    <div class="standings-card">
+      <div class="standings-top"><span class="st-title">Risultati partite</span></div>
+      <div id="results-list">${mattiaMatches.map(matchResultRowHtml).join('')}</div>
+    </div>
+  `;
+
+  wireScorerRows();
+  wireResultsList(mattiaMatches);
+  wireBackupControls();
+}
+
+function wireBackupControls(){
+  const exportBtn = document.getElementById('export-results-btn');
+  if (exportBtn){
+    exportBtn.addEventListener('click',()=>{
+      const data = JSON.stringify(loadAllResults(), null, 2);
+      const blob = new Blob([data], { type:'application/json' });
+      const urlObj = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = urlObj;
+      a.download = 'trevigliese-risultati-backup.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(urlObj);
+    });
+  }
+  const importInput = document.getElementById('import-results-input');
+  if (importInput){
+    importInput.addEventListener('change',(ev)=>{
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try {
+          const parsed = JSON.parse(reader.result);
+          saveAllResults(parsed);
+          renderMattiaStandings();
+        } catch(e){
+          alert('File non valido: non sembra un backup esportato da questa app.');
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+}
+
+function scorerRowHtml(p){
+  const mine = isMioFiglio(p.name);
+  return `
+    <div class="scorer-row ${mine ? 'mine' : ''}">
+      <div class="scorer-row-top" data-player="${p.name}">
+        <span class="scorer-name">${p.name}</span>
+        <span class="scorer-goals">${p.goals}</span>
+      </div>
+      <div class="scorer-detail" style="display:none;">
+        ${p.dettagli.length
+          ? p.dettagli.map(d=>`<div class="scorer-detail-item">G${d.giornata} — ${d.title} — tempo ${d.tempo}: ${d.goals} gol</div>`).join('')
+          : `<div class="scorer-detail-item empty">Nessun gol segnato finora</div>`}
+      </div>
+    </div>
+  `;
+}
+
+function wireScorerRows(){
+  document.querySelectorAll('.scorer-row-top').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const detail = row.nextElementSibling;
+      detail.style.display = detail.style.display==='none' ? 'block' : 'none';
+    });
+  });
+}
+
+function tempoDetailHtml(data){
+  return data.tempi.map((t,idx)=>{
+    const label = `Tempo ${idx+1}${idx===3 ? ' (libero)' : ''}`;
+    if (!tempoGiocato(t)){
+      return `<div class="tempo-detail-row"><span class="tdr-label">${label}</span><span class="tdr-score tdr-none">non giocato</span></div>`;
+    }
+    const f = tempoGolFatti(t), a = Number(t.against), e = tempoEsito(t);
+    const scorerNames = (t.scorers||[]).filter(sc=>sc.goals>0).map(sc=> sc.goals>1 ? `${playerLabel(sc.name)} (${sc.goals})` : playerLabel(sc.name)).join(', ');
+    return `
+      <div class="tempo-detail-row">
+        <span class="tdr-label">${label}</span>
+        <span class="tdr-score ${esitoClass(e)}">${f}-${a} (${e})</span>
+      </div>
+      ${scorerNames ? `<div class="tdr-scorers">${scorerNames}</div>` : ''}
+    `;
+  }).join('');
+}
+
+function matchResultRowHtml(m){
+  const key = matchKeyFor(m);
+  const data = getMatchData(key);
+  const r = calcolaMatch(data);
+  const isOpen = openMatchKey===key;
+  const isDetailOpen = openDetailKey===key;
+  const chip = (agg,label) => agg
+    ? `<span class="risultato-chip ${esitoClass(agg.esito)}">${label}: ${agg.golFatti}-${agg.golSubiti} (${agg.esito})</span>`
+    : `<span class="risultato-chip esito-none">${label}: da giocare</span>`;
+
+  return `
+    <div class="match-result-row">
+      <div class="mrr-head">
+        <div class="mrr-info" data-detail-key="${key}">
+          <span class="mrr-giornata">G${m.giornata}</span>
+          <span class="mrr-title">${m.title}</span>
+        </div>
+        <button type="button" class="edit-toggle-btn" data-key="${key}">${isOpen ? 'Chiudi' : 'Modifica'}</button>
+      </div>
+      <div class="mrr-chips" data-detail-key="${key}">${chip(r.tre,'3T')}${chip(r.quattro,'4T')}</div>
+      ${isDetailOpen ? `<div class="tempo-detail">${tempoDetailHtml(data)}</div>` : ''}
+      ${isOpen ? tempoEditorHtml(key) : ''}
+    </div>
+  `;
+}
+
+function tempoEditorHtml(key){
+  const buf = ensureBuffer(key);
+  const rows = buf.tempi.map((t,idx)=>{
+    const forGoals = tempoGolFatti(t);
+    return `
+      <div class="tempo-edit-row">
+        <div class="tempo-edit-head">
+          <span>Tempo ${idx+1}${idx===3 ? ' <span class="tempo-free-tag">libero</span>' : ''}</span>
+          <span class="tempo-for-display">Trevigliese ${forGoals}</span>
+        </div>
+        <div class="tempo-edit-controls">
+          <label>Gol avversari</label>
+          <input type="number" min="0" class="tempo-against-input" data-key="${key}" data-idx="${idx}" value="${t.against}">
+        </div>
+        <div class="scorer-add-row">
+          <select class="scorer-select" data-key="${key}" data-idx="${idx}">
+            ${PLAYERS.map(p=>`<option value="${p}">${isMioFiglio(p) ? '★ '+p : p}</option>`).join('')}
+          </select>
+          <input type="number" min="1" value="1" class="scorer-goals-input" data-key="${key}" data-idx="${idx}">
+          <button type="button" class="add-scorer-btn" data-key="${key}" data-idx="${idx}">+ gol</button>
+        </div>
+        <div class="scorer-chips">
+          ${t.scorers.map((sc,si)=>`<span class="scorer-chip ${isMioFiglio(sc.name)?'mine':''}">${playerLabel(sc.name)} ×${sc.goals}<button type="button" class="remove-scorer-btn" data-key="${key}" data-idx="${idx}" data-si="${si}">×</button></span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="tempo-editor">
+      ${rows}
+      <div class="editor-actions">
+        <button type="button" class="save-result-btn" data-key="${key}">Salva risultato</button>
+        <button type="button" class="cancel-result-btn" data-key="${key}">Annulla</button>
+      </div>
+    </div>
+  `;
+}
+
+function wireResultsList(mattiaMatches){
+  document.querySelectorAll('[data-detail-key]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const key = el.dataset.detailKey;
+      openDetailKey = (openDetailKey===key) ? null : key;
+      renderMattiaStandings();
+    });
+  });
+
+  document.querySelectorAll('.edit-toggle-btn').forEach(btn=>{
+    btn.addEventListener('click',(ev)=>{
+      ev.stopPropagation();
+      const key = btn.dataset.key;
+      openMatchKey = (openMatchKey===key) ? null : key;
+      if (openMatchKey) ensureBuffer(openMatchKey);
+      renderMattiaStandings();
+    });
+  });
+
+  document.querySelectorAll('.tempo-against-input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const buf = ensureBuffer(inp.dataset.key);
+      buf.tempi[inp.dataset.idx].against = inp.value;
+    });
+  });
+
+  document.querySelectorAll('.add-scorer-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key = btn.dataset.key, idx = Number(btn.dataset.idx);
+      const row = btn.closest('.tempo-edit-row');
+      const select = row.querySelector('.scorer-select');
+      const goalsInput = row.querySelector('.scorer-goals-input');
+      const goals = Number(goalsInput.value) || 1;
+      const buf = ensureBuffer(key);
+      buf.tempi[idx].scorers.push({ name: select.value, goals });
+      renderMattiaStandings();
+    });
+  });
+
+  document.querySelectorAll('.remove-scorer-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key = btn.dataset.key, idx = Number(btn.dataset.idx), si = Number(btn.dataset.si);
+      const buf = ensureBuffer(key);
+      buf.tempi[idx].scorers.splice(si,1);
+      renderMattiaStandings();
+    });
+  });
+
+  document.querySelectorAll('.save-result-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key = btn.dataset.key;
+      setMatchData(key, editBuffer[key]);
+      delete editBuffer[key];
+      openMatchKey = null;
+      renderMattiaStandings();
+    });
+  });
+
+  document.querySelectorAll('.cancel-result-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key = btn.dataset.key;
+      delete editBuffer[key];
+      openMatchKey = null;
+      renderMattiaStandings();
+    });
+  });
 }
 
 /* ============== CONFLITTI ============== */
@@ -1171,6 +1813,7 @@ renderTabbar();
 renderStandingsChips();
 renderStandings('mattia');
 initConflicts();
+initFirebase().then(caricaRisultatiDalCloud);
 </script>
 </body>
 </html>
