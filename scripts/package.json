@@ -1,0 +1,9 @@
+{
+  "name": "football-planner-reminders",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Script per inviare promemoria push via Firebase Cloud Messaging, eseguito da GitHub Actions",
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}
