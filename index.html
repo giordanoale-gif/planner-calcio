@@ -598,6 +598,60 @@ h2.section-title{
 .save-result-btn{ background:var(--campo); color:#fff; }
 .cancel-result-btn{ background:var(--riga); color:var(--inchiostro-soft); }
 
+/* Eventi extra: amichevoli (verdino) e tornei (rossino) */
+.match-result-row.tipo-amichevole{ background:#eef7ef; border-left:3px solid #4a9d5c; margin:0 -14px; padding:12px 14px; }
+.match-result-row.tipo-torneo{ background:#fbeeee; border-left:3px solid #c25a5a; margin:0 -14px; padding:12px 14px; }
+.mrr-actions{ display:flex; align-items:center; gap:6px; flex:none; }
+.delete-evento-btn{
+  border:none;
+  background:var(--riga);
+  color:var(--inchiostro-soft);
+  width:22px; height:22px;
+  border-radius:50%;
+  font-size:14px;
+  line-height:1;
+  cursor:pointer;
+}
+.legend-row{ display:flex; gap:14px; padding:0 14px 10px; font-size:11px; color:var(--inchiostro-soft); }
+.legend-item{ display:flex; align-items:center; gap:5px; }
+.legend-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+.legend-dot.tipo-amichevole{ background:#4a9d5c; }
+.legend-dot.tipo-torneo{ background:#c25a5a; }
+
+.torneo-partita-block{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--riga); }
+.torneo-partita-block:first-child{ margin-top:0; padding-top:0; border-top:none; }
+.torneo-partita-head{ display:flex; justify-content:space-between; align-items:center; font-size:12.5px; font-weight:700; margin-bottom:4px; }
+.torneo-partita-edit-head{ font-size:12.5px; font-weight:800; color:var(--campo-deep); margin:12px 0 4px; padding-top:10px; border-top:1px solid var(--riga); }
+.torneo-partita-edit-head:first-child{ margin-top:0; padding-top:0; border-top:none; }
+
+.add-evento-row{ padding:12px 14px 14px; }
+.add-evento-row button{
+  width:100%;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--campo-deep);
+  background:var(--verde-chiaro,#eef3ec);
+  border:1px dashed var(--campo);
+  border-radius:9px;
+  padding:10px 0;
+  cursor:pointer;
+}
+.nuovo-evento-form{ padding:4px 14px 14px; }
+.form-field{ margin-bottom:9px; }
+.form-field label{ display:block; font-size:11.5px; color:var(--inchiostro-soft); margin-bottom:3px; font-weight:600; }
+.form-field input, .form-field select{
+  width:100%;
+  border:1px solid var(--riga);
+  border-radius:8px;
+  padding:7px 9px;
+  font-size:13px;
+  font-family:inherit;
+  background:var(--carta);
+}
+.form-partita-row{ display:flex; gap:6px; margin-bottom:6px; }
+.form-partita-row .nf-partita-titolo{ flex:3; border:1px solid var(--riga); border-radius:8px; padding:6px 8px; font-size:12.5px; font-family:inherit; }
+.form-partita-row .nf-partita-numtempi{ flex:1; width:50px; border:1px solid var(--riga); border-radius:8px; padding:6px 8px; font-size:12.5px; font-family:inherit; }
+
 /* ---------- Conflitti ---------- */
 .settings-box{
   background:var(--carta);
@@ -1324,7 +1378,8 @@ function calcolaClassificaSquadra(mattiaMatches){
   return { punti3, punti4, giornateGiocate };
 }
 
-function calcolaMarcatori(mattiaMatches){
+// soloCampionato=true -> conta solo le 9 giornate ufficiali; false -> anche amichevoli/tornei aggiunti a mano
+function calcolaMarcatori(mattiaMatches, soloCampionato){
   const totals = {};
   PLAYERS.forEach(p=> totals[p] = { goals:0, dettagli:[] });
   mattiaMatches.forEach(m=>{
@@ -1338,19 +1393,93 @@ function calcolaMarcatori(mattiaMatches){
       });
     });
   });
+  if (!soloCampionato){
+    getExtraEventi().forEach(ev=>{
+      ev.partite.forEach((p,pi)=>{
+        p.tempi.forEach((t,idx)=>{
+          (t.scorers||[]).forEach(sc=>{
+            if (!totals[sc.name]) totals[sc.name] = { goals:0, dettagli:[] };
+            const g = Number(sc.goals||0);
+            totals[sc.name].goals += g;
+            if (g>0) totals[sc.name].dettagli.push({ giornata:null, tempo:idx+1, goals:g, title: ev.partite.length>1 ? `${ev.titolo} — ${p.titolo}` : ev.titolo });
+          });
+        });
+      });
+    });
+  }
   return totals;
 }
 
-// stato dell'editor (solo una partita apribile alla volta, modifiche "in bozza" fino al Salva)
+/* ---- Eventi extra: amichevoli e tornei aggiunti manualmente ---- */
+function getExtraEventi(){
+  if (!resultsCache.extra) resultsCache.extra = [];
+  return resultsCache.extra;
+}
+function getEventoById(id){ return getExtraEventi().find(e=>e.id===id); }
+function emptyTempiN(n){ return Array.from({length:Math.max(1,n)}, ()=>({ against:'', scorers:[] })); }
+
+function creaEvento(bozza){
+  const extra = getExtraEventi();
+  let partite;
+  if (bozza.tipo==='amichevole'){
+    partite = [{ titolo: bozza.titolo || 'Amichevole', tempi: emptyTempiN(bozza.numTempi) }];
+  } else {
+    partite = bozza.partite.map((p,i)=>({ titolo: p.titolo || `Partita ${i+1}`, tempi: emptyTempiN(p.numTempi) }));
+  }
+  const evento = {
+    id: 'extra-' + Date.now(),
+    tipo: bozza.tipo,
+    titolo: bozza.titolo || (bozza.tipo==='amichevole' ? 'Amichevole' : 'Torneo'),
+    data: bozza.data || '',
+    partite
+  };
+  extra.push(evento);
+  saveAllResults(resultsCache);
+  return evento;
+}
+function eliminaEvento(id){
+  resultsCache.extra = getExtraEventi().filter(e=>e.id!==id);
+  saveAllResults(resultsCache);
+}
+
+// stato dell'editor (solo una partita/evento apribile alla volta, modifiche "in bozza" fino al Salva)
 let openMatchKey = null;
 let openDetailKey = null;
 let editBuffer = {};
+let nuovoEventoForm = null;
+let marcatoriSoloCampionato = false;
+
+// Rappresentazione unificata: ogni "voce" (partita di campionato, amichevole, torneo)
+// viene normalizzata in { partite: [ {titolo, tempi, libero} ] } per riusare lo stesso
+// editor e la stessa vista di dettaglio ovunque.
 function ensureBuffer(key){
   if (!editBuffer[key]){
-    const stored = getMatchData(key);
-    editBuffer[key] = JSON.parse(JSON.stringify(stored));
+    if (key.startsWith('extra-')){
+      const ev = getEventoById(key);
+      editBuffer[key] = {
+        tipo: ev.tipo,
+        partite: ev.partite.map(p=>({ titolo:p.titolo, tempi: JSON.parse(JSON.stringify(p.tempi)), libero:false }))
+      };
+    } else {
+      const stored = getMatchData(key);
+      editBuffer[key] = {
+        tipo: 'campionato',
+        partite: [{ titolo:null, tempi: JSON.parse(JSON.stringify(stored.tempi)), libero:true }]
+      };
+    }
   }
   return editBuffer[key];
+}
+function salvaBuffer(key){
+  const buf = editBuffer[key];
+  if (buf.tipo==='campionato'){
+    setMatchData(key, { tempi: buf.partite[0].tempi });
+  } else {
+    const ev = getEventoById(key);
+    ev.partite = buf.partite.map(p=>({ titolo:p.titolo, tempi:p.tempi }));
+    saveAllResults(resultsCache);
+  }
+  delete editBuffer[key];
 }
 
 /* ============== CLASSIFICHE ============== */
@@ -1417,10 +1546,15 @@ function renderMattiaStandings(){
   const container = document.getElementById('standings-content');
   const mattiaMatches = matches.filter(m=>m.cat==='mattia').sort((a,b)=>a.giornata-b.giornata);
   const squadra = calcolaClassificaSquadra(mattiaMatches);
-  const marcatori = calcolaMarcatori(mattiaMatches);
+  const marcatori = calcolaMarcatori(mattiaMatches, marcatoriSoloCampionato);
   const marcatoriArr = Object.entries(marcatori)
     .map(([name,v])=>({name, ...v}))
     .sort((a,b)=> b.goals-a.goals || a.name.localeCompare(b.name));
+
+  const voci = [
+    ...mattiaMatches.map(m=>({ key:matchKeyFor(m), tipo:'campionato', m })),
+    ...getExtraEventi().map(ev=>({ key:ev.id, tipo:ev.tipo, ev }))
+  ].sort((a,b)=> dataVoce(a) - dataVoce(b));
 
   container.innerHTML = `
     <div class="standings-card" style="margin-bottom:14px;">
@@ -1441,18 +1575,29 @@ function renderMattiaStandings(){
 
     <div class="standings-card" style="margin-bottom:14px;">
       <div class="standings-top"><span class="st-title">Marcatori</span></div>
+      <div class="chip-row" id="marcatori-filtro" style="padding:0 14px; margin-top:10px;">
+        <button type="button" class="chip ${!marcatoriSoloCampionato?'active':''}" data-marcfiltro="tutte">Tutte le partite</button>
+        <button type="button" class="chip ${marcatoriSoloCampionato?'active':''}" data-marcfiltro="campionato">Solo campionato</button>
+      </div>
       <div id="scorers-list">${marcatoriArr.map(scorerRowHtml).join('')}</div>
     </div>
 
     <div class="standings-card">
       <div class="standings-top"><span class="st-title">Risultati partite</span></div>
-      <div id="results-list">${mattiaMatches.map(matchResultRowHtml).join('')}</div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-dot tipo-amichevole"></span>Amichevole</span>
+        <span class="legend-item"><span class="legend-dot tipo-torneo"></span>Torneo</span>
+      </div>
+      <div id="results-list">${voci.map(vociRowHtml).join('')}</div>
+      ${nuovoEventoForm ? nuovoEventoFormHtml() : `<div class="add-evento-row"><button type="button" id="apri-nuovo-evento-btn">+ Aggiungi amichevole o torneo</button></div>`}
     </div>
   `;
 
   wireScorerRows();
-  wireResultsList(mattiaMatches);
+  wireMarcatoriFiltro();
+  wireResultsList();
   wireBackupControls();
+  wireNuovoEventoForm();
 }
 
 function wireBackupControls(){
@@ -1517,9 +1662,19 @@ function wireScorerRows(){
   });
 }
 
-function tempoDetailHtml(data){
-  return data.tempi.map((t,idx)=>{
-    const label = `Tempo ${idx+1}${idx===3 ? ' (libero)' : ''}`;
+function wireMarcatoriFiltro(){
+  document.querySelectorAll('[data-marcfiltro]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      marcatoriSoloCampionato = (btn.dataset.marcfiltro === 'campionato');
+      renderMattiaStandings();
+    });
+  });
+}
+
+// Dettaglio di UNA partita (singola, non torneo): righe tempo per tempo con risultato e marcatori
+function tempiDettaglioHtml(partita){
+  return partita.tempi.map((t,idx)=>{
+    const label = `Tempo ${idx+1}${partita.libero && idx===3 ? ' (libero)' : ''}`;
     if (!tempoGiocato(t)){
       return `<div class="tempo-detail-row"><span class="tdr-label">${label}</span><span class="tdr-score tdr-none">non giocato</span></div>`;
     }
@@ -1535,63 +1690,136 @@ function tempoDetailHtml(data){
   }).join('');
 }
 
-function matchResultRowHtml(m){
-  const key = matchKeyFor(m);
-  const data = getMatchData(key);
-  const r = calcolaMatch(data);
+// Dettaglio di un evento intero: una partita sola (campionato/amichevole) o più (torneo)
+function dettaglioEventoHtml(partite){
+  if (partite.length===1) return tempiDettaglioHtml(partite[0]);
+  return partite.map((p,pi)=>{
+    const agg = calcolaAggregato(p.tempi, p.tempi.length);
+    const chip = agg
+      ? `<span class="risultato-chip ${esitoClass(agg.esito)}">${agg.golFatti}-${agg.golSubiti} (${agg.esito})</span>`
+      : `<span class="risultato-chip esito-none">da giocare</span>`;
+    return `
+      <div class="torneo-partita-block">
+        <div class="torneo-partita-head"><span>${p.titolo}</span>${chip}</div>
+        ${tempiDettaglioHtml(p)}
+      </div>
+    `;
+  }).join('');
+}
+
+// Data "effettiva" di una voce, per ordinare campionato + extra nella stessa lista.
+// Un evento extra senza data indicata viene collocato alla data di creazione (oggi),
+// così resta comunque in posizione sensata invece di finire sempre in coda.
+function dataVoce(voce){
+  if (voce.tipo==='campionato') return new Date(voce.m.date);
+  if (voce.ev.data) return new Date(voce.ev.data + 'T12:00:00');
+  const ts = Number(voce.ev.id.split('-')[1]);
+  return isNaN(ts) ? new Date() : new Date(ts);
+}
+
+function getPartiteNormalizzate(voce){
+  if (voce.tipo==='campionato'){
+    const data = getMatchData(voce.key);
+    return [{ titolo: voce.m.title, tempi: data.tempi, libero:true }];
+  }
+  return voce.ev.partite.map(p=>({ titolo:p.titolo, tempi:p.tempi, libero:false }));
+}
+
+function vociRowHtml(voce){
+  const key = voce.key;
   const isOpen = openMatchKey===key;
   const isDetailOpen = openDetailKey===key;
-  const chip = (agg,label) => agg
-    ? `<span class="risultato-chip ${esitoClass(agg.esito)}">${label}: ${agg.golFatti}-${agg.golSubiti} (${agg.esito})</span>`
-    : `<span class="risultato-chip esito-none">${label}: da giocare</span>`;
+  const partite = getPartiteNormalizzate(voce);
+
+  let titolo, sottotitolo, chipsHtml, tipoClass = '';
+
+  if (voce.tipo==='campionato'){
+    const r = calcolaMatch(getMatchData(key));
+    const chip = (agg,label) => agg
+      ? `<span class="risultato-chip ${esitoClass(agg.esito)}">${label}: ${agg.golFatti}-${agg.golSubiti} (${agg.esito})</span>`
+      : `<span class="risultato-chip esito-none">${label}: da giocare</span>`;
+    titolo = voce.m.title;
+    sottotitolo = `G${voce.m.giornata}`;
+    chipsHtml = chip(r.tre,'3T') + chip(r.quattro,'4T');
+  } else {
+    const ev = voce.ev;
+    tipoClass = ev.tipo==='amichevole' ? 'tipo-amichevole' : 'tipo-torneo';
+    titolo = ev.titolo;
+    sottotitolo = (ev.tipo==='amichevole' ? 'Amichevole' : 'Torneo') + (ev.data ? ` · ${ev.data}` : '');
+    if (ev.partite.length===1){
+      const agg = calcolaAggregato(ev.partite[0].tempi, ev.partite[0].tempi.length);
+      chipsHtml = agg
+        ? `<span class="risultato-chip ${esitoClass(agg.esito)}">${agg.golFatti}-${agg.golSubiti} (${agg.esito})</span>`
+        : `<span class="risultato-chip esito-none">da giocare</span>`;
+    } else {
+      let v=0,p=0,s=0,giocate=0;
+      ev.partite.forEach(part=>{
+        const agg = calcolaAggregato(part.tempi, part.tempi.length);
+        if (agg){ giocate++; if(agg.esito==='V') v++; else if(agg.esito==='P') p++; else s++; }
+      });
+      chipsHtml = giocate>0
+        ? `<span class="risultato-chip esito-p">${giocate}/${ev.partite.length} partite — ${v}V ${p}P ${s}S</span>`
+        : `<span class="risultato-chip esito-none">${ev.partite.length} partite — da giocare</span>`;
+    }
+  }
 
   return `
-    <div class="match-result-row">
+    <div class="match-result-row ${tipoClass}">
       <div class="mrr-head">
         <div class="mrr-info" data-detail-key="${key}">
-          <span class="mrr-giornata">G${m.giornata}</span>
-          <span class="mrr-title">${m.title}</span>
+          <span class="mrr-giornata">${sottotitolo}</span>
+          <span class="mrr-title">${titolo}</span>
         </div>
-        <button type="button" class="edit-toggle-btn" data-key="${key}">${isOpen ? 'Chiudi' : 'Modifica'}</button>
+        <div class="mrr-actions">
+          ${voce.tipo!=='campionato' ? `<button type="button" class="delete-evento-btn" data-key="${key}" title="Elimina">×</button>` : ''}
+          <button type="button" class="edit-toggle-btn" data-key="${key}">${isOpen ? 'Chiudi' : 'Modifica'}</button>
+        </div>
       </div>
-      <div class="mrr-chips" data-detail-key="${key}">${chip(r.tre,'3T')}${chip(r.quattro,'4T')}</div>
-      ${isDetailOpen ? `<div class="tempo-detail">${tempoDetailHtml(data)}</div>` : ''}
-      ${isOpen ? tempoEditorHtml(key) : ''}
+      <div class="mrr-chips" data-detail-key="${key}">${chipsHtml}</div>
+      ${isDetailOpen ? `<div class="tempo-detail">${dettaglioEventoHtml(partite)}</div>` : ''}
+      ${isOpen ? editorEventoHtml(key) : ''}
     </div>
   `;
 }
 
-function tempoEditorHtml(key){
-  const buf = ensureBuffer(key);
-  const rows = buf.tempi.map((t,idx)=>{
+function partitaEditRowsHtml(key, pi, partita){
+  return partita.tempi.map((t,idx)=>{
     const forGoals = tempoGolFatti(t);
     return `
       <div class="tempo-edit-row">
         <div class="tempo-edit-head">
-          <span>Tempo ${idx+1}${idx===3 ? ' <span class="tempo-free-tag">libero</span>' : ''}</span>
+          <span>Tempo ${idx+1}${partita.libero && idx===3 ? ' <span class="tempo-free-tag">libero</span>' : ''}</span>
           <span class="tempo-for-display">Trevigliese ${forGoals}</span>
         </div>
         <div class="tempo-edit-controls">
           <label>Gol avversari</label>
-          <input type="number" min="0" class="tempo-against-input" data-key="${key}" data-idx="${idx}" value="${t.against}">
+          <input type="number" min="0" class="tempo-against-input" data-key="${key}" data-pi="${pi}" data-idx="${idx}" value="${t.against}">
         </div>
         <div class="scorer-add-row">
-          <select class="scorer-select" data-key="${key}" data-idx="${idx}">
+          <select class="scorer-select" data-key="${key}" data-pi="${pi}" data-idx="${idx}">
             ${PLAYERS.map(p=>`<option value="${p}">${isMioFiglio(p) ? '★ '+p : p}</option>`).join('')}
           </select>
-          <input type="number" min="1" value="1" class="scorer-goals-input" data-key="${key}" data-idx="${idx}">
-          <button type="button" class="add-scorer-btn" data-key="${key}" data-idx="${idx}">+ gol</button>
+          <input type="number" min="1" value="1" class="scorer-goals-input" data-key="${key}" data-pi="${pi}" data-idx="${idx}">
+          <button type="button" class="add-scorer-btn" data-key="${key}" data-pi="${pi}" data-idx="${idx}">+ gol</button>
         </div>
         <div class="scorer-chips">
-          ${t.scorers.map((sc,si)=>`<span class="scorer-chip ${isMioFiglio(sc.name)?'mine':''}">${playerLabel(sc.name)} ×${sc.goals}<button type="button" class="remove-scorer-btn" data-key="${key}" data-idx="${idx}" data-si="${si}">×</button></span>`).join('')}
+          ${t.scorers.map((sc,si)=>`<span class="scorer-chip ${isMioFiglio(sc.name)?'mine':''}">${playerLabel(sc.name)} ×${sc.goals}<button type="button" class="remove-scorer-btn" data-key="${key}" data-pi="${pi}" data-idx="${idx}" data-si="${si}">×</button></span>`).join('')}
         </div>
       </div>
     `;
   }).join('');
+}
+
+function editorEventoHtml(key){
+  const buf = ensureBuffer(key);
+  const corpo = buf.partite.map((partita,pi)=>`
+    ${buf.partite.length>1 ? `<div class="torneo-partita-edit-head">${partita.titolo}</div>` : ''}
+    ${partitaEditRowsHtml(key,pi,partita)}
+  `).join('');
 
   return `
     <div class="tempo-editor">
-      ${rows}
+      ${corpo}
       <div class="editor-actions">
         <button type="button" class="save-result-btn" data-key="${key}">Salva risultato</button>
         <button type="button" class="cancel-result-btn" data-key="${key}">Annulla</button>
@@ -1600,7 +1828,7 @@ function tempoEditorHtml(key){
   `;
 }
 
-function wireResultsList(mattiaMatches){
+function wireResultsList(){
   document.querySelectorAll('[data-detail-key]').forEach(el=>{
     el.addEventListener('click',()=>{
       const key = el.dataset.detailKey;
@@ -1619,31 +1847,41 @@ function wireResultsList(mattiaMatches){
     });
   });
 
+  document.querySelectorAll('.delete-evento-btn').forEach(btn=>{
+    btn.addEventListener('click',(ev)=>{
+      ev.stopPropagation();
+      if (confirm('Eliminare questo evento e tutti i risultati inseriti?')){
+        eliminaEvento(btn.dataset.key);
+        renderMattiaStandings();
+      }
+    });
+  });
+
   document.querySelectorAll('.tempo-against-input').forEach(inp=>{
     inp.addEventListener('input',()=>{
       const buf = ensureBuffer(inp.dataset.key);
-      buf.tempi[inp.dataset.idx].against = inp.value;
+      buf.partite[inp.dataset.pi].tempi[inp.dataset.idx].against = inp.value;
     });
   });
 
   document.querySelectorAll('.add-scorer-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const key = btn.dataset.key, idx = Number(btn.dataset.idx);
+      const key = btn.dataset.key, pi = Number(btn.dataset.pi), idx = Number(btn.dataset.idx);
       const row = btn.closest('.tempo-edit-row');
       const select = row.querySelector('.scorer-select');
       const goalsInput = row.querySelector('.scorer-goals-input');
       const goals = Number(goalsInput.value) || 1;
       const buf = ensureBuffer(key);
-      buf.tempi[idx].scorers.push({ name: select.value, goals });
+      buf.partite[pi].tempi[idx].scorers.push({ name: select.value, goals });
       renderMattiaStandings();
     });
   });
 
   document.querySelectorAll('.remove-scorer-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const key = btn.dataset.key, idx = Number(btn.dataset.idx), si = Number(btn.dataset.si);
+      const key = btn.dataset.key, pi = Number(btn.dataset.pi), idx = Number(btn.dataset.idx), si = Number(btn.dataset.si);
       const buf = ensureBuffer(key);
-      buf.tempi[idx].scorers.splice(si,1);
+      buf.partite[pi].tempi[idx].scorers.splice(si,1);
       renderMattiaStandings();
     });
   });
@@ -1651,8 +1889,7 @@ function wireResultsList(mattiaMatches){
   document.querySelectorAll('.save-result-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const key = btn.dataset.key;
-      setMatchData(key, editBuffer[key]);
-      delete editBuffer[key];
+      salvaBuffer(key);
       openMatchKey = null;
       renderMattiaStandings();
     });
@@ -1666,6 +1903,113 @@ function wireResultsList(mattiaMatches){
       renderMattiaStandings();
     });
   });
+}
+
+/* ---- Form di creazione nuovo evento (amichevole / torneo) ---- */
+function nuovoEventoDefault(){
+  return { tipo:'amichevole', titolo:'', data:'', numTempi:2, partite:[{titolo:'',numTempi:2}] };
+}
+
+function nuovoEventoFormHtml(){
+  const f = nuovoEventoForm;
+  const campiComuni = `
+    <div class="form-field">
+      <label>Tipo</label>
+      <select id="nf-tipo">
+        <option value="amichevole" ${f.tipo==='amichevole'?'selected':''}>Amichevole</option>
+        <option value="torneo" ${f.tipo==='torneo'?'selected':''}>Torneo</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Titolo</label>
+      <input type="text" id="nf-titolo" placeholder="${f.tipo==='amichevole' ? 'es. vs Oratorio San Pietro' : 'es. Torneo di Primavera'}" value="${f.titolo}">
+    </div>
+    <div class="form-field">
+      <label>Data (opzionale)</label>
+      <input type="date" id="nf-data" value="${f.data}">
+    </div>
+  `;
+
+  let corpoSpecifico;
+  if (f.tipo==='amichevole'){
+    corpoSpecifico = `
+      <div class="form-field">
+        <label>Numero di tempi</label>
+        <input type="number" min="1" max="10" id="nf-numtempi" value="${f.numTempi}">
+      </div>
+    `;
+  } else {
+    corpoSpecifico = `
+      <div class="form-field">
+        <label>Numero di partite</label>
+        <input type="number" min="1" max="12" id="nf-numpartite" value="${f.partite.length}">
+      </div>
+      <div id="nf-partite-list">
+        ${f.partite.map((p,i)=>`
+          <div class="form-partita-row">
+            <input type="text" placeholder="Partita ${i+1} (es. vs Squadra X)" class="nf-partita-titolo" data-i="${i}" value="${p.titolo}">
+            <input type="number" min="1" max="10" class="nf-partita-numtempi" data-i="${i}" value="${p.numTempi}">
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="nuovo-evento-form">
+      ${campiComuni}
+      ${corpoSpecifico}
+      <div class="editor-actions">
+        <button type="button" class="save-result-btn" id="nf-crea-btn">Crea evento</button>
+        <button type="button" class="cancel-result-btn" id="nf-annulla-btn">Annulla</button>
+      </div>
+    </div>
+  `;
+}
+
+function wireNuovoEventoForm(){
+  const apriBtn = document.getElementById('apri-nuovo-evento-btn');
+  if (apriBtn) apriBtn.addEventListener('click', ()=>{ nuovoEventoForm = nuovoEventoDefault(); renderMattiaStandings(); });
+
+  const tipoSel = document.getElementById('nf-tipo');
+  if (tipoSel) tipoSel.addEventListener('change', ()=>{ nuovoEventoForm.tipo = tipoSel.value; renderMattiaStandings(); });
+
+  const titoloInp = document.getElementById('nf-titolo');
+  if (titoloInp) titoloInp.addEventListener('input', ()=>{ nuovoEventoForm.titolo = titoloInp.value; });
+
+  const dataInp = document.getElementById('nf-data');
+  if (dataInp) dataInp.addEventListener('input', ()=>{ nuovoEventoForm.data = dataInp.value; });
+
+  const numTempiInp = document.getElementById('nf-numtempi');
+  if (numTempiInp) numTempiInp.addEventListener('input', ()=>{ nuovoEventoForm.numTempi = Number(numTempiInp.value)||1; });
+
+  const numPartiteInp = document.getElementById('nf-numpartite');
+  if (numPartiteInp) numPartiteInp.addEventListener('change', ()=>{
+    const n = Math.max(1, Number(numPartiteInp.value)||1);
+    const partite = nuovoEventoForm.partite;
+    while (partite.length < n) partite.push({ titolo:'', numTempi:2 });
+    partite.length = n;
+    renderMattiaStandings();
+  });
+
+  document.querySelectorAll('.nf-partita-titolo').forEach(inp=>{
+    inp.addEventListener('input', ()=>{ nuovoEventoForm.partite[inp.dataset.i].titolo = inp.value; });
+  });
+  document.querySelectorAll('.nf-partita-numtempi').forEach(inp=>{
+    inp.addEventListener('input', ()=>{ nuovoEventoForm.partite[inp.dataset.i].numTempi = Number(inp.value)||1; });
+  });
+
+  const creaBtn = document.getElementById('nf-crea-btn');
+  if (creaBtn) creaBtn.addEventListener('click', ()=>{
+    const evento = creaEvento(nuovoEventoForm);
+    nuovoEventoForm = null;
+    openMatchKey = evento.id;
+    ensureBuffer(evento.id);
+    renderMattiaStandings();
+  });
+
+  const annullaBtn = document.getElementById('nf-annulla-btn');
+  if (annullaBtn) annullaBtn.addEventListener('click', ()=>{ nuovoEventoForm = null; renderMattiaStandings(); });
 }
 
 /* ============== CONFLITTI ============== */
