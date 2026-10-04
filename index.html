@@ -352,6 +352,61 @@ h2.section-title{
 }
 .venue-row .vmeta a{color:var(--tr); text-decoration:none; font-weight:600; display:flex; align-items:center; gap:3px;}
 
+/* ---------- Classifiche ---------- */
+.standings-card{
+  background:var(--carta);
+  border:1px solid var(--riga);
+  border-radius:12px;
+  overflow:hidden;
+}
+.standings-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 14px;
+  border-bottom:1px solid var(--riga);
+}
+.standings-top .st-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  font-weight:700;
+}
+.standings-top a{
+  font-size:12px;
+  font-weight:700;
+  color:var(--campo);
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+}
+.standings-frame-wrap{
+  position:relative;
+  background:var(--calce);
+  height:420px;
+  overflow:hidden;
+}
+.standings-frame-wrap iframe{
+  width:133.33%;
+  height:560px;
+  border:none;
+  display:block;
+  transform:scale(0.75);
+  transform-origin:top left;
+}
+.standings-fallback{
+  padding:10px 14px;
+  font-size:11.5px;
+  color:var(--inchiostro-soft);
+  background:#f3f1ea;
+  border-top:1px solid var(--riga);
+  line-height:1.5;
+}
+.standings-fallback a{color:var(--campo); font-weight:700; text-decoration:none;}
+
 /* ---------- Conflitti ---------- */
 .settings-box{
   background:var(--carta);
@@ -539,7 +594,8 @@ nav.tabbar{
 
     <div id="sec-standings" class="section">
       <h2 class="section-title">Classifiche</h2>
-      <div class="empty-state">Le classifiche arrivano con la seconda giornata giocata.<br>Per ora il campionato è ancora tutto da scrivere.</div>
+      <div class="chip-row" id="standings-chips"></div>
+      <div id="standings-content"></div>
     </div>
 
     <div id="sec-conflicts" class="section">
@@ -911,6 +967,65 @@ function renderTabbar(){
   });
 }
 
+/* ============== CLASSIFICHE ============== */
+const STANDINGS_URL = {
+  c7:  "https://www.bergamotornei.com/it/t-teamtable/154/campionato-nazionale-asi-bergamo-tornei-calcio-a-7/",
+  c11: "https://www.bergamotornei.com/it/t-teamtable/153/campionato-nazionale-asi-bergamo-tornei-c11-over-40/"
+};
+
+function renderStandingsChips(){
+  const el = document.getElementById('standings-chips');
+  const cats = ['mattia','c7','c11'];
+  el.innerHTML = cats.map((k,i)=>`
+    <button class="chip ${i===0?'active':''}" data-sfilter="${k}">
+      <span class="dot" style="background:${TEAMS[k].color}"></span>${TEAMS[k].chipLabel}
+    </button>
+  `).join('');
+  el.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      el.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderStandings(btn.dataset.sfilter);
+    });
+  });
+}
+
+function renderStandings(cat){
+  const container = document.getElementById('standings-content');
+  const t = TEAMS[cat];
+
+  if (cat === 'mattia'){
+    container.innerHTML = `
+      <div class="standings-card">
+        <div class="standings-top">
+          <span class="st-title">${badge(cat,18)}${t.label}</span>
+        </div>
+        <div class="empty-state">
+          Per i Pulcini 2017 non esiste una classifica ufficiale pubblicata — a questa età il torneo FIGC non la prevede.<br>
+          La costruiremo noi a partire dai risultati delle giornate giocate.
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const url = STANDINGS_URL[cat];
+  container.innerHTML = `
+    <div class="standings-card">
+      <div class="standings-top">
+        <span class="st-title">${badge(cat,18)}${t.label}</span>
+        <a href="${url}" target="_blank">Apri sul sito ${ICO.arrow}</a>
+      </div>
+      <div class="standings-frame-wrap">
+        <iframe src="${url}#tournament-standings" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="standings-fallback">
+        Vista ridotta per stare nello spazio della card (salta automaticamente a dove inizia la tabella, saltando testata e menu del sito). Se risulta troppo piccola, usa il link "Apri sul sito" qui sopra per la versione a piena pagina. Se invece resta vuota, bergamotornei.com non permette l'incapsulamento e l'unica via è il link.
+      </div>
+    </div>
+  `;
+}
+
 /* ============== CONFLITTI ============== */
 // Durata effettiva delle due partite "mie" (non il campionato di Mattia, che non gioco io)
 const DURATA = {
@@ -1053,6 +1168,8 @@ renderCalendarList('all');
 renderVenueChips();
 renderVenueList('all');
 renderTabbar();
+renderStandingsChips();
+renderStandings('mattia');
 initConflicts();
 </script>
 </body>
