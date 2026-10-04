@@ -767,6 +767,33 @@ h2.section-title{
 }
 
 /* empty state */
+.notif-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:var(--carta);
+  border:1px solid var(--riga);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:12px;
+  font-size:12.5px;
+  color:var(--inchiostro-soft);
+}
+.notif-card button{
+  flex:none;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+  background:var(--campo);
+  border:none;
+  border-radius:9px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+.notif-card.ok{ background:#e3f1e6; color:var(--campo-deep); font-weight:600; }
+.notif-card.warn{ background:#f6e2e2; color:#8c2b2b; }
+
 .empty-state{
   text-align:center;
   padding:40px 20px;
@@ -822,6 +849,7 @@ nav.tabbar{
 
   <main>
     <div id="sec-home" class="section active">
+      <div id="notif-card"></div>
       <div id="upnext-strip"></div>
     </div>
 
@@ -884,9 +912,18 @@ nav.tabbar{
             match /trevigliese/{docId} {
               allow read, write: if true;
             }
+            match /push_tokens/{docId} {
+              allow read, write: if true;
+            }
+            match /notifiche_inviate/{docId} {
+              allow read, write: if true;
+            }
           }
         }
-      (altrimenti la modalità test si blocca da sola dopo 30 giorni)
+      (altrimenti la modalità test si blocca da sola dopo 30 giorni. push_tokens serve perché il
+       browser scrive direttamente il token di notifica; notifiche_inviate la scrive solo lo
+       script server-side con l'account di servizio, che bypassa comunque le regole, ma teniamola
+       aperta per semplicità visto che non contiene dati sensibili)
    4. Nel menu in alto a sinistra, icona a forma di ingranaggio > "Impostazioni progetto" >
       scorri fino a "Le tue app" > icona "</>" (Web) > registra una app (basta un nome) >
       copia l'oggetto "firebaseConfig" che ti viene mostrato e sostituiscilo qui sotto.
@@ -910,6 +947,16 @@ let firebaseAttivo = false;
 let RISULTATI_DOC = null;
 let fsGetDoc = null, fsSetDoc = null, fsServerTimestamp = null;
 
+// Chiave pubblica "VAPID" per le notifiche push — da generare su:
+// Console Firebase > Impostazioni progetto > Cloud Messaging > Web Push certificates > Genera coppia di chiavi.
+// Non è segreta allo stesso modo di una password, ma è specifica del progetto: senza la tua
+// non puoi ricevere notifiche sul tuo progetto Firebase.
+const VAPID_KEY = "BJeAqubuKs0suC-ll54foFIDoCe4Ztx3k-kmQId6a2Am51WIdzuqfbElSbOEgOTQ2_9468mgSobN-5G95nUMQoA";
+
+let fbMessaging = null;
+let messagingAttivo = false;
+let fsCollection=null, fsAddDoc=null, fsSetDocMerge=null;
+
 async function initFirebase(){
   try {
     const appMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
@@ -920,7 +967,28 @@ async function initFirebase(){
     fsGetDoc = fsMod.getDoc;
     fsSetDoc = fsMod.setDoc;
     fsServerTimestamp = fsMod.serverTimestamp;
+    fsCollection = fsMod.collection;
+    fsAddDoc = fsMod.addDoc;
     firebaseAttivo = true;
+
+    // Messaging è opzionale: se il browser non lo supporta (o il VAPID key non è
+    // ancora stato configurato), l'app funziona comunque, solo senza notifiche.
+    try {
+      const msgMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");
+      const supportata = await msgMod.isSupported();
+      if (supportata){
+        fbMessaging = msgMod.getMessaging(fbApp);
+        window.__fcmGetToken = (reg) => msgMod.getToken(fbMessaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+        msgMod.onMessage(fbMessaging, (payload)=>{
+          const title = (payload.notification && payload.notification.title) || 'Football Planner PRO';
+          const body = (payload.notification && payload.notification.body) || '';
+          alert(`${title}\n${body}`); // app in primo piano: niente notifica di sistema, basta un avviso semplice
+        });
+        messagingAttivo = true;
+      }
+    } catch(e){
+      console.warn('Firebase Messaging non disponibile in questo ambiente.', e);
+    }
   } catch(e){
     console.warn('Firebase non disponibile in questo ambiente — i dati restano solo in questa sessione.', e);
     firebaseAttivo = false;
@@ -1057,6 +1125,63 @@ function badge(catKey, size){
 }
 
 /* ============== RENDER: HERO (prossimo impegno, su tutte le squadre) ============== */
+/* ============== NOTIFICHE PUSH ============== */
+let notifStatus = 'idle'; // 'idle' | 'attivo'
+
+function renderNotifCard(){
+  const el = document.getElementById('notif-card');
+  if (!el) return;
+
+  if (typeof Notification === 'undefined' || !messagingAttivo){
+    el.innerHTML = '';
+    return;
+  }
+
+  const perm = Notification.permission;
+  if (perm === 'granted' && notifStatus === 'attivo'){
+    el.innerHTML = `<div class="notif-card ok">Promemoria attivi su questo dispositivo.</div>`;
+    return;
+  }
+  if (perm === 'denied'){
+    el.innerHTML = `<div class="notif-card warn">Notifiche bloccate per questo sito — per riattivarle devi sbloccarle dalle impostazioni del browser.</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="notif-card">
+      <span>Vuoi un promemoria push 24 ore prima di ogni partita?</span>
+      <button type="button" id="attiva-notifiche-btn">Attiva promemoria</button>
+    </div>
+  `;
+  const btn = document.getElementById('attiva-notifiche-btn');
+  if (btn) btn.addEventListener('click', abilitaNotifiche);
+}
+
+async function abilitaNotifiche(){
+  try {
+    if (!('serviceWorker' in navigator)){
+      alert('Questo browser non supporta le notifiche push.');
+      return;
+    }
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted'){ renderNotifCard(); return; }
+
+    const reg = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+    const token = await window.__fcmGetToken(reg);
+    if (!token){
+      alert('Non sono riuscito a generare il token per le notifiche. Riprova più tardi.');
+      return;
+    }
+    if (firebaseAttivo && fsCollection && fsAddDoc){
+      await fsAddDoc(fsCollection(db, 'push_tokens'), { token, creato: new Date().toISOString() });
+    }
+    notifStatus = 'attivo';
+    renderNotifCard();
+  } catch(e){
+    console.error('Errore attivazione notifiche:', e);
+    alert('Non sono riuscito ad attivare le notifiche su questo dispositivo/browser.');
+  }
+}
+
 function renderHero(now){
   const upcoming = matches
     .map(m => ({...m, dt:new Date(m.date)}))
@@ -1431,6 +1556,7 @@ function creaEvento(bozza){
     tipo: bozza.tipo,
     titolo: bozza.titolo || (bozza.tipo==='amichevole' ? 'Amichevole' : 'Torneo'),
     data: bozza.data || '',
+    ora: bozza.ora || '',
     partite
   };
   extra.push(evento);
@@ -1712,7 +1838,7 @@ function dettaglioEventoHtml(partite){
 // così resta comunque in posizione sensata invece di finire sempre in coda.
 function dataVoce(voce){
   if (voce.tipo==='campionato') return new Date(voce.m.date);
-  if (voce.ev.data) return new Date(voce.ev.data + 'T12:00:00');
+  if (voce.ev.data) return new Date(voce.ev.data + 'T' + (voce.ev.ora || '12:00') + ':00');
   const ts = Number(voce.ev.id.split('-')[1]);
   return isNaN(ts) ? new Date() : new Date(ts);
 }
@@ -1745,7 +1871,7 @@ function vociRowHtml(voce){
     const ev = voce.ev;
     tipoClass = ev.tipo==='amichevole' ? 'tipo-amichevole' : 'tipo-torneo';
     titolo = ev.titolo;
-    sottotitolo = (ev.tipo==='amichevole' ? 'Amichevole' : 'Torneo') + (ev.data ? ` · ${ev.data}` : '');
+    sottotitolo = (ev.tipo==='amichevole' ? 'Amichevole' : 'Torneo') + (ev.data ? ` · ${ev.data}` : '') + (ev.ora ? ` ${ev.ora}` : '');
     if (ev.partite.length===1){
       const agg = calcolaAggregato(ev.partite[0].tempi, ev.partite[0].tempi.length);
       chipsHtml = agg
@@ -1907,7 +2033,7 @@ function wireResultsList(){
 
 /* ---- Form di creazione nuovo evento (amichevole / torneo) ---- */
 function nuovoEventoDefault(){
-  return { tipo:'amichevole', titolo:'', data:'', numTempi:2, partite:[{titolo:'',numTempi:2}] };
+  return { tipo:'amichevole', titolo:'', data:'', ora:'', numTempi:2, partite:[{titolo:'',numTempi:2}] };
 }
 
 function nuovoEventoFormHtml(){
@@ -1927,6 +2053,10 @@ function nuovoEventoFormHtml(){
     <div class="form-field">
       <label>Data (opzionale)</label>
       <input type="date" id="nf-data" value="${f.data}">
+    </div>
+    <div class="form-field">
+      <label>Ora (opzionale, serve per il promemoria 24h prima)</label>
+      <input type="time" id="nf-ora" value="${f.ora}">
     </div>
   `;
 
@@ -1979,6 +2109,9 @@ function wireNuovoEventoForm(){
 
   const dataInp = document.getElementById('nf-data');
   if (dataInp) dataInp.addEventListener('input', ()=>{ nuovoEventoForm.data = dataInp.value; });
+
+  const oraInp = document.getElementById('nf-ora');
+  if (oraInp) oraInp.addEventListener('input', ()=>{ nuovoEventoForm.ora = oraInp.value; });
 
   const numTempiInp = document.getElementById('nf-numtempi');
   if (numTempiInp) numTempiInp.addEventListener('input', ()=>{ nuovoEventoForm.numTempi = Number(numTempiInp.value)||1; });
@@ -2157,7 +2290,8 @@ renderTabbar();
 renderStandingsChips();
 renderStandings('mattia');
 initConflicts();
-initFirebase().then(caricaRisultatiDalCloud);
+renderNotifCard();
+initFirebase().then(()=>{ caricaRisultatiDalCloud(); renderNotifCard(); });
 </script>
 </body>
 </html>
