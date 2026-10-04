@@ -1,440 +1,1059 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Football Planner Pro</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <style>
-        :root {
-            --primary: #007aff;
-            --bg-color: #f2f2f7;
-            --card-bg: #ffffff;
-            --text-main: #1c1c1e;
-            --text-secondary: #8e8e93;
-            --tag-mattia: #007aff; /* Azzurro Pulcini */
-            --tag-c7: #a50044;     /* Blaugrana C7 */
-            --tag-c11: #f4b400;    /* Giallo C11 */
-            --border-color: #d1d1d6;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 80px;
-        }
-        header {
-            background: var(--card-bg);
-            padding: 16px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-        .header-logo {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        h1 {
-            font-size: 19px;
-            margin: 0;
-            font-weight: 700;
-        }
-        p.subtitle {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-        .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        /* Navigazione Tab Inferiore */
-        .nav-tabs {
-            display: flex;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            z-index: 1000;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-        }
-        .nav-tab {
-            background: none;
-            border: none;
-            font-size: 11px;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            flex: 1;
-            padding: 10px 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .nav-tab.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-        .nav-tab span.icon {
-            font-size: 20px;
-        }
-        .section {
-            display: none;
-        }
-        .section.active {
-            display: block;
-        }
-        /* Filtri */
-        .filters {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 16px;
-            -webkit-overflow-scrolling: touch;
-        }
-        .filter-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-            color: var(--text-main);
-        }
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        /* Card Match */
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 14px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            border-left: 6px solid var(--primary);
-        }
-        .card.mattia { border-left-color: var(--tag-mattia); }
-        .card.c7 { border-left-color: var(--tag-c7); }
-        .card.c11 { border-left-color: var(--tag-c11); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football Planner PRO — proposta grafica</title>
+<style>
+:root{
+  color-scheme: light;
+  --campo: #163c2c;
+  --campo-deep: #0e2a1f;
+  --calce: #faf9f3;
+  --carta: #ffffff;
+  --inchiostro: #15181a;
+  --inchiostro-soft: #5c655f;
+  --riga: #dde3d7;
+  --tr: #1d5fbf;
+  --vg: #7a1230;
+  --gl: #b9800e;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--calce);
+  color:var(--inchiostro);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-bottom:84px;
+}
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-        .card-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .card-details {
-            font-size: 13px;
-            color: #3a3a3c;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        a.map-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        a.map-link:hover {
-            text-decoration: underline;
-        }
-        .empty-state {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 30px;
-            font-size: 14px;
-        }
-    </style>
+/* ---------- phone frame for preview ---------- */
+.frame{
+  max-width:420px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--calce);
+  position:relative;
+  box-shadow:0 0 40px rgba(0,0,0,0.08);
+}
+
+/* ---------- header ---------- */
+.hero-header{
+  background:
+    radial-gradient(circle at 85% -10%, rgba(255,255,255,0.08), transparent 55%),
+    linear-gradient(165deg, var(--campo) 0%, var(--campo-deep) 100%);
+  color:var(--calce);
+  padding:22px 20px 20px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-header::after{
+  content:"";
+  position:absolute;
+  right:-60px; top:-60px;
+  width:220px; height:220px;
+  border:1.5px solid rgba(255,255,255,0.08);
+  border-radius:50%;
+}
+.hero-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+}
+.hero-top .app-name{
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:0.01em;
+  opacity:0.75;
+}
+.hero-top .data-oggi{
+  font-size:12px;
+  opacity:0.6;
+}
+.hero-label{
+  margin-top:18px;
+  font-size:13px;
+  color:rgba(250,249,243,0.65);
+}
+.hero-main{
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+  margin-top:4px;
+}
+.hero-count{
+  font-size:76px;
+  font-weight:800;
+  line-height:0.82;
+  letter-spacing:-0.03em;
+}
+.hero-count-unit{
+  font-size:17px;
+  font-weight:600;
+  padding-bottom:10px;
+  color:rgba(250,249,243,0.75);
+}
+.hero-fixture{
+  margin-top:14px;
+  font-size:19px;
+  font-weight:700;
+  line-height:1.25;
+}
+.hero-fixture .badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;height:22px;
+  border-radius:50%;
+  font-size:10px;
+  font-weight:800;
+  margin-right:6px;
+  vertical-align:-5px;
+}
+.hero-meta{
+  margin-top:10px;
+  display:flex;
+  gap:16px;
+  font-size:13px;
+  color:rgba(250,249,243,0.78);
+}
+.hero-meta .row{display:flex; align-items:center; gap:6px;}
+.hero-meta a{
+  color:inherit;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.hero-meta a:hover{text-decoration:underline;}
+.hero-meta a svg{flex:none;}
+.hero-giornata{
+  display:inline-block;
+  margin-top:12px;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:0.02em;
+  color:var(--campo-deep);
+  background:rgba(250,249,243,0.9);
+  padding:4px 10px;
+  border-radius:20px;
+}
+
+/* ---------- sections ---------- */
+main{padding:18px 18px 10px;}
+.section{display:none;}
+.section.active{display:block;}
+
+h2.section-title{
+  font-size:16px;
+  font-weight:700;
+  margin:4px 2px 14px;
+}
+
+/* up-next strip on home */
+.upnext-strip .card{margin-bottom:10px;}
+
+/* ---------- team filter chips ---------- */
+.chip-row{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:6px;
+  margin-bottom:16px;
+  width:100%;
+}
+.chip{
+  flex:1 1 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:7px 6px;
+  border-radius:20px;
+  border:1px solid var(--riga);
+  background:var(--carta);
+  font-size:11.5px;
+  font-weight:600;
+  color:var(--inchiostro-soft);
+  cursor:pointer;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  min-width:0;
+}
+.chip .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.chip.active{
+  background:var(--inchiostro);
+  color:var(--calce);
+  border-color:var(--inchiostro);
+}
+.chip.active .dot{box-shadow:0 0 0 2px rgba(255,255,255,0.5);}
+
+/* ---------- ticket-style match card ---------- */
+.card-list{display:flex; flex-direction:column; gap:10px;}
+.card{
+  display:flex;
+  background:var(--carta);
+  border:1px solid var(--riga);
+  border-radius:10px;
+  overflow:hidden;
+}
+.card.next{
+  border-color:var(--accent, var(--riga));
+  box-shadow:0 0 0 1px var(--accent, transparent);
+  background:linear-gradient(0deg, var(--carta), var(--carta)) padding-box,
+             var(--carta);
+}
+.card.next .stub{
+  background:color-mix(in srgb, var(--accent, var(--riga)) 10%, var(--carta));
+}
+.next-tag{
+  display:inline-block;
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+  padding:2px 6px;
+  border-radius:6px;
+  margin-left:6px;
+  vertical-align:1px;
+}
+.card .stub{
+  flex:none;
+  width:62px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:10px 4px;
+  border-right:1px dashed var(--riga);
+  position:relative;
+}
+.card .stub .day{
+  font-size:24px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-0.02em;
+}
+.card .stub .mon{
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  color:var(--inchiostro-soft);
+  margin-top:2px;
+}
+.card .stub .wk{
+  font-size:9.5px;
+  color:var(--inchiostro-soft);
+  margin-top:1px;
+}
+.card .body{
+  flex:1;
+  padding:11px 13px;
+  min-width:0;
+}
+.card .body .top-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:4px;
+}
+.card .badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;height:18px;
+  border-radius:50%;
+  font-size:8.5px;
+  font-weight:800;
+  color:#fff;
+  flex:none;
+}
+.card .team-name{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:700;
+  color:var(--inchiostro-soft);
+}
+.card .time-col{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:3px;
+}
+.card .time{
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--inchiostro);
+}
+.card .giornata-tag{
+  font-size:9.5px;
+  font-weight:800;
+  letter-spacing:0.02em;
+  color:#fff;
+  background:var(--inchiostro-soft);
+  padding:1px 6px;
+  border-radius:7px;
+}
+.card .fixture{
+  font-size:14.5px;
+  font-weight:700;
+  margin-bottom:5px;
+  line-height:1.3;
+}
+.card .place-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:var(--inchiostro-soft);
+}
+.card .place-row a{
+  color:var(--inchiostro-soft);
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.card .place-row svg{flex:none;}
+.card .place-row a:hover{color:var(--inchiostro);}
+
+/* venues list — simple record rows, not cards */
+.venue-row{
+  padding:13px 2px;
+  border-bottom:1px solid var(--riga);
+}
+.venue-row:first-child{border-top:1px solid var(--riga);}
+.venue-row .vtop{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:3px;
+}
+.venue-row .vname{font-size:14px; font-weight:700;}
+.venue-row .home-tag{
+  font-size:10px;
+  font-weight:700;
+  color:var(--campo);
+  background:var(--riga);
+  padding:2px 7px;
+  border-radius:10px;
+  margin-left:6px;
+}
+.venue-row .vfield{font-size:12.5px; color:var(--inchiostro-soft); margin-bottom:4px;}
+.venue-row .vmeta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12px;
+  color:var(--inchiostro-soft);
+}
+.venue-row .vmeta a{color:var(--tr); text-decoration:none; font-weight:600; display:flex; align-items:center; gap:3px;}
+
+/* ---------- Conflitti ---------- */
+.settings-box{
+  background:var(--carta);
+  border:1px solid var(--riga);
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:16px;
+}
+.settings-box .settings-title{
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--inchiostro-soft);
+  margin-bottom:8px;
+}
+.settings-row{
+  display:flex;
+  gap:14px;
+}
+.settings-field{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.settings-field label{
+  font-size:11px;
+  color:var(--inchiostro-soft);
+}
+.settings-field .input-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid var(--riga);
+  border-radius:8px;
+  padding:5px 8px;
+}
+.settings-field input{
+  width:100%;
+  border:none;
+  outline:none;
+  font-size:14px;
+  font-weight:700;
+  color:var(--inchiostro);
+  background:transparent;
+  font-family:inherit;
+}
+.settings-field .unit{font-size:11px; color:var(--inchiostro-soft);}
+
+.conflict-card{
+  background:var(--carta);
+  border:1px solid var(--riga);
+  border-radius:12px;
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.conflict-head{
+  background:var(--campo-deep);
+  color:var(--calce);
+  padding:10px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+}
+.conflict-head .cdate{font-size:13px; font-weight:700;}
+.conflict-head .coverlap{font-size:11px; color:rgba(250,249,243,0.65);}
+.conflict-matches{padding:12px 14px 4px;}
+.conflict-match-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:7px 0;
+  border-bottom:1px solid var(--riga);
+  font-size:12.5px;
+}
+.conflict-match-row:last-child{border-bottom:none;}
+.conflict-match-row .cm-team{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-weight:700;
+}
+.conflict-match-row .cm-when{
+  color:var(--inchiostro-soft);
+  font-weight:600;
+  text-align:right;
+}
+.conflict-options{padding:4px 14px 14px;}
+.option-box{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:var(--verde-chiaro, #eef3ec);
+  border-left:3px solid var(--campo);
+}
+.option-box .opt-label{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  color:var(--campo-deep);
+  margin-bottom:4px;
+}
+.option-box.alt{
+  background:#f3f1ea;
+  border-left-color:var(--inchiostro-soft);
+}
+.option-box.alt .opt-label{color:var(--inchiostro-soft);}
+.option-box p{
+  margin:0;
+  font-size:12.5px;
+  line-height:1.5;
+  color:var(--inchiostro);
+}
+
+/* empty state */
+.empty-state{
+  text-align:center;
+  padding:40px 20px;
+  color:var(--inchiostro-soft);
+  font-size:13.5px;
+  line-height:1.5;
+}
+
+/* ---------- bottom nav — scoreboard strip, not iOS pills ---------- */
+nav.tabbar{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  width:100%;
+  max-width:420px;
+  background:var(--inchiostro);
+  display:flex;
+}
+.tabbar button{
+  flex:1;
+  min-width:0;
+  background:none;
+  border:none;
+  color:rgba(250,249,243,0.45);
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:0.01em;
+  padding:12px 2px 10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  position:relative;
+  cursor:pointer;
+}
+.tabbar button span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}
+.tabbar button svg{opacity:0.75;}
+.tabbar button.active{color:var(--calce);}
+.tabbar button.active::before{
+  content:"";
+  position:absolute;
+  top:0; left:18%; right:18%;
+  height:2px;
+  background:var(--calce);
+}
+</style>
 </head>
 <body>
+<div class="frame">
 
-    <header>
-        <img src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQ-hviXZJIG1s2FS9FjRbhr6dCumSuMDt-1EzALYdXZibAK9vyoJerDPJ2Qy3PpFXh3etAFpsdz9jc7_C0_Z55SnP6VU-Iw8t1SleBU6bns-F_KHn0GVsQg6lkbJY6lypUrSov0UgDbMw&usqp=CAc" alt="Logo" class="header-logo">
-        <h1>Football Planner Pro</h1>
-        <p class="subtitle">Il tuo Network Calcistico Personale</p>
-    </header>
+  <header class="hero-header" id="hero"></header>
 
-    <div class="container">
-        
-        <!-- SEZIONE 1: HOMEPAGE -->
-        <div id="sec-home" class="section active">
-            <h2 style="font-size: 17px; margin-top: 0;">Prossimi Impegni in Evidenza</h2>
-            <div class="card-list" id="homeMatchesList"></div>
-        </div>
-
-        <!-- SEZIONE 2: CALENDARIO -->
-        <div id="sec-calendar" class="section">
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">Tutti</button>
-                <button class="filter-btn" data-filter="mattia">Pulcini 2017 (Trevigliese)</button>
-                <button class="filter-btn" data-filter="c7">Vecchia Guardia Berghem (C7)</button>
-                <button class="filter-btn" data-filter="c11">GL Sporting (Over 40)</button>
-            </div>
-            <div class="card-list" id="fullCalendarList"></div>
-        </div>
-
-        <!-- SEZIONE 3: SEDI CAMPI -->
-        <div id="sec-venues" class="section">
-            <div class="filters">
-                <button class="filter-btn active" data-venue-filter="all">Tutti</button>
-                <button class="filter-btn" data-venue-filter="mattia">Pulcini 2017</button>
-                <button class="filter-btn" data-venue-filter="c7">Calcio a 7</button>
-                <button class="filter-btn" data-venue-filter="c11">Calcio a 11</button>
-            </div>
-            <div class="card-list" id="venuesList"></div>
-        </div>
-
-        <!-- SEZIONE 4: CLASSIFICHE -->
-        <div id="sec-standings" class="section">
-            <h2 style="font-size: 17px; margin-top: 0;">Classifiche</h2>
-            <div class="empty-state">Sezione classifiche in arrivo...</div>
-        </div>
-
+  <main>
+    <div id="sec-home" class="section active">
+      <div id="upnext-strip"></div>
     </div>
 
-    <!-- BARRA DI NAVIGAZIONE IN BASSO -->
-    <nav class="nav-tabs">
-        <button class="nav-tab active" data-tab="home">
-            <span class="icon">🏠</span>
-            <span>Home</span>
-        </button>
-        <button class="nav-tab" data-tab="calendar">
-            <span class="icon">📅</span>
-            <span>Calendario</span>
-        </button>
-        <button class="nav-tab" data-tab="venues">
-            <span class="icon">📍</span>
-            <span>Campi</span>
-        </button>
-        <button class="nav-tab" data-tab="standings">
-            <span class="icon">🏆</span>
-            <span>Classifiche</span>
-        </button>
-    </nav>
+    <div id="sec-calendar" class="section">
+      <h2 class="section-title">Calendario</h2>
+      <div class="chip-row" id="cal-chips"></div>
+      <div class="card-list" id="cal-list"></div>
+    </div>
 
-    <script>
-        // DATABASE UNIFICATO PARTITE
-        const matches = [
-            // Calcio a 11 Over 40 - GL Sporting
-            { category: 'c11', catName: 'GL Sporting (Over 40)', date: '2026-10-08 21:30', title: 'GL Sporting vs avversaria', locationName: 'Azzano S.P. Centro Sportivo', address: 'Azzano San Paolo' },
-            
-            // Calcio a 7 - Vecchia Guardia Berghem
-            { category: 'c7', catName: 'Vecchia Guardia Berghem (C7)', date: '2026-10-02 20:30', title: 'Vecchia Guardia vs Fenaomeni F.C.', locationName: 'Celadina', address: 'Via Celadina, Bergamo' },
-            { category: 'c7', catName: 'Vecchia Guardia Berghem (C7)', date: '2026-10-09 20:30', title: 'Vecchia Guardia vs Sita\' Olta', locationName: 'Celadina', address: 'Via Celadina, Bergamo' },
-            { category: 'c7', catName: 'Vecchia Guardia Berghem (C7)', date: '2026-10-14 20:30', title: 'Vecchia Guardia vs Hakuna Matata', locationName: 'Torre de Roveri', address: 'Torre de Roveri' },
-            { category: 'c7', catName: 'Vecchia Guardia Berghem (C7)', date: '2026-10-23 21:00', title: 'Vecchia Guardia vs Amici Ponteranica', locationName: 'Ponteranica', address: 'Ponteranica' },
-            { category: 'c7', catName: 'Vecchia Guardia Berghem (C7)', date: '2026-10-30 22:00', title: 'Vecchia Guardia vs ASD Carvico', locationName: 'Carvico', address: 'Carvico' },
+    <div id="sec-venues" class="section">
+      <h2 class="section-title">Campi</h2>
+      <div class="chip-row" id="venue-chips"></div>
+      <div id="venue-list"></div>
+    </div>
 
-            // Pulcini 2017 - Trevigliese (Girone G)[cite: 1, 2]
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-10-03 14:30', title: 'Or. Calvenzano vs Trevigliese', locationName: 'Oratorio "S.Croce"', address: 'Via Roma 10, Calvenzano' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-10-10 15:00', title: 'Trevigliese vs Colognese', locationName: 'C.S. Comunale "A. Mazza"', address: 'Via Malgari 1, Treviglio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-10-17 15:00', title: 'Accademia PBC vs Trevigliese', locationName: 'Campo Comunale N. 2', address: 'Via Armando Diaz 22, Pontirolo Nuovo' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-10-24 15:00', title: 'Trevigliese vs Virtusciseranobg B', locationName: 'C.S. Comunale "A. Mazza"', address: 'Via Malgari 1, Treviglio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-10-31 15:00', title: 'A.C.O.S. Treviglio vs Trevigliese', locationName: 'C.S. Comunale "A. Mazza"', address: 'Via Malgari 1, Treviglio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-11-07 15:00', title: 'Trevigliese vs Oratorio Cologno', locationName: 'C.S. Comunale "A. Mazza"', address: 'Via Malgari 1, Treviglio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-11-14 15:00', title: 'Caravaggio vs Trevigliese', locationName: 'C.S. Comunale Campo N.2 E.A.', address: 'Via G. Castoldi 11, Caravaggio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-11-21 15:00', title: 'Trevigliese vs Brignanese', locationName: 'C.S. Comunale "A. Mazza"', address: 'Via Malgari 1, Treviglio' },
-            { category: 'mattia', catName: 'Pulcini 2017 (Trevigliese)', date: '2026-11-28 15:00', title: 'Atalanta B vs Trevigliese', locationName: 'C.S. Comunale N.1 (E.A.)', address: 'Via Oratorio 20, Brembate' }
-        ];
+    <div id="sec-standings" class="section">
+      <h2 class="section-title">Classifiche</h2>
+      <div class="empty-state">Le classifiche arrivano con la seconda giornata giocata.<br>Per ora il campionato è ancora tutto da scrivere.</div>
+    </div>
 
-        // DATABASE SEDI CAMPI[cite: 2]
-        const venues = [
-            { category: 'mattia', name: 'ATALANTA BERGAMASCA C. SRL SQ.B', field: 'C.S. COMUNALE N.1 (E.A)', locality: 'BREMBATE', address: 'VIA ORATORIO, 20', day: 'DOMENICA (Ore 16:00)' },
-            { category: 'mattia', name: 'CARAVAGGIO SRL', field: 'C.S. COMUNALE - CAMPO N.2 E.A.', locality: 'CARAVAGGIO', address: 'VIA G. CASTOLDI, 11', day: 'SABATO (Ore 14:00)' },
-            { category: 'mattia', name: 'CALCIO ORATORIO COLOGNO', field: 'ORATORIO "SAN GIOVANNI BOSCO"', locality: 'COLOGNO AL SERIO', address: 'VIA MANZONI, 15', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'TREVIGLIESE S.S.D. A.R.L.', field: 'C.S. COMUNALE "A. MAZZA"', locality: 'TREVIGLIO', address: 'VIA MALGARI 1', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'ORATORIO CALVENZANO', field: 'ORATORIO "S. CROCE"', locality: 'CALVENZANO', address: 'VIA ROMA 10', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'COLOGNESE', field: 'STADIO COMUNALE FACCHETTI 2 E.A.', locality: 'COLOGNO AL SERIO', address: 'VIA DELLE GALOSE/BETOSCA', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'ACCADEMIA PBC GERA DADDA', field: 'CAMPO COMUNALE N.2', locality: 'PONTIROLO NUOVO', address: 'VIA ARMANDO DIAZ 22', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'VIRTUSCISERANOBERGAMO 1909 SQ.B', field: 'C.S. COMUNALE - CAMPO N.2 (E.A)', locality: 'CISERANO', address: 'VIA MAZZINI 13', day: 'DOMENICA (Ore 11:00)' },
-            { category: 'mattia', name: 'A.C.O.S. TREVIGLIO CALCIO', field: 'C.S. COMUNALE "A. MAZZA"', locality: 'TREVIGLIO', address: 'VIA MALGARI 1', day: 'SABATO (Ore 14:30)' },
-            { category: 'mattia', name: 'BRIGNANESE CALCIO A.S.D.', field: 'CENTRO SPORTIVO COMUNALE', locality: 'BRIGNANO GERA D\'ADDA', address: 'VIA OLIMPIA', day: 'SABATO (Ore 14:45)' },
-            { category: 'c7', name: 'Vecchia Guardia - Celadina', field: 'Campo Sportivo Celadina', locality: 'BERGAMO', address: 'Via Celadina, Bergamo', day: 'Venerdì / Lunedì' },
-            { category: 'c11', name: 'GL Sporting - Azzano S.P.', field: 'Centro Sportivo Comunale', locality: 'AZZANO SAN PAOLO', address: 'Azzano San Paolo', day: 'Giovedì / Venerdì' }
-        ];
+    <div id="sec-conflicts" class="section">
+      <h2 class="section-title">Conflitti</h2>
+      <div class="settings-box">
+        <div class="settings-title">Ipotesi di calcolo (modificale se conosci i tempi reali)</div>
+        <div class="settings-row">
+          <div class="settings-field">
+            <label>Spostamento tra i campi</label>
+            <div class="input-wrap">
+              <input type="number" id="travel-min" value="15" min="0" max="90">
+              <span class="unit">min</span>
+            </div>
+          </div>
+          <div class="settings-field">
+            <label>Contingency</label>
+            <div class="input-wrap">
+              <input type="number" id="contingency-min" value="7" min="0" max="30">
+              <span class="unit">min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="conflicts-list"></div>
+    </div>
+  </main>
 
-        // GESTIONE TAB DI NAVIGAZIONE (Robusta e testata)
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                
-                document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                
-                document.getElementById('sec-' + targetTab).classList.add('active');
-                this.classList.add('active');
-            });
-        });
+  <nav class="tabbar" id="tabbar"></nav>
+</div>
 
-        // RENDER HOMEPAGE
-        function renderHome() {
-            const container = document.getElementById('homeMatchesList');
-            container.innerHTML = '';
-            const now = new Date();
-            const categories = ['mattia', 'c7', 'c11'];
-            let nextMatches = [];
+<script>
+/* ============== ICONE (inline, nessuna emoji) ============== */
+const ICO = {
+  pin: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-7.58 7-12a7 7 0 10-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>`,
+  clock: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  arrow: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M7 17L17 7M9 7h8v8"/></svg>`,
+  home: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11.5L12 4l8 7.5M6 10v9h12v-9"/></svg>`,
+  cal: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3.5v4M16 3.5v4"/></svg>`,
+  field: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="14" rx="1.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 5v14M3.5 9h3v6h-3M20.5 9h-3v6h3"/></svg>`,
+  cup: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 5H4v2a3 3 0 003 3M17 5h3v2a3 3 0 01-3 3"/><path d="M12 14v3M9 20h6M10 17h4v3h-4z"/></svg>`,
+  conflict: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9.5" cy="12" r="6.2"/><circle cx="14.5" cy="12" r="6.2"/></svg>`
+};
 
-            categories.forEach(cat => {
-                const upcoming = matches
-                    .filter(m => m.category === cat && new Date(m.date) >= now)
-                    .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
-                if (upcoming) nextMatches.push(upcoming);
-            });
+/* ============== DATI ============== */
+const TEAMS = {
+  mattia: { label: "Trevigliese · Pulcini 2017", chipLabel: "Trevigliese", short: "TR", color: "#1d5fbf" },
+  c7:     { label: "VG Berghem · C7", chipLabel: "VG Berghem", short: "VG", color: "#7a1230" },
+  c11:    { label: "GL Sporting · Over 40", chipLabel: "GL Sporting", short: "GL", color: "#b9800e" }
+};
 
-            nextMatches.sort((a, b) => new Date(a.date) - new Date(b.date));
+const matches = [
+  { cat:"mattia", giornata:1, date:"2026-10-03T14:30", title:"Or. Calvenzano – Trevigliese", place:"Oratorio \"S. Croce\"", addr:"Via Roma 10, Calvenzano" },
+  { cat:"mattia", giornata:2, date:"2026-10-10T14:30", title:"Trevigliese – Colognese", place:"C.S. Comunale \"A. Mazza\"", addr:"Via Malgari 1, Treviglio" },
+  { cat:"mattia", giornata:3, date:"2026-10-17T14:30", title:"Accademia PBC – Trevigliese", place:"Campo Comunale N.2", addr:"Via Armando Diaz 22, Pontirolo Nuovo" },
+  { cat:"mattia", giornata:4, date:"2026-10-24T14:30", title:"Trevigliese – Virtusciseranobg B", place:"C.S. Comunale \"A. Mazza\"", addr:"Via Malgari 1, Treviglio" },
+  { cat:"mattia", giornata:5, date:"2026-10-31T14:30", title:"A.C.O.S. Treviglio – Trevigliese", place:"C.S. Comunale \"A. Mazza\"", addr:"Via Malgari 1, Treviglio" },
+  { cat:"mattia", giornata:6, date:"2026-11-07T14:30", title:"Trevigliese – Oratorio Cologno", place:"C.S. Comunale \"A. Mazza\"", addr:"Via Malgari 1, Treviglio" },
+  { cat:"mattia", giornata:7, date:"2026-11-14T14:00", title:"Caravaggio – Trevigliese", place:"C.S. Comunale Campo N.2 (E.A.)", addr:"Via G. Castoldi 11, Caravaggio" },
+  { cat:"mattia", giornata:8, date:"2026-11-21T14:30", title:"Trevigliese – Brignanese", place:"C.S. Comunale \"A. Mazza\"", addr:"Via Malgari 1, Treviglio" },
+  { cat:"mattia", giornata:9, date:"2026-11-29T16:00", title:"Atalanta B – Trevigliese", place:"C.S. Comunale N.1 (E.A.)", addr:"Via Oratorio 20, Brembate" },
 
-            if (nextMatches.length === 0) {
-                container.innerHTML = '<div class="empty-state">Nessun impegno in programma.</div>';
-                return;
-            }
+  { cat:"c7", giornata:1, date:"2026-09-25T21:00", title:"RSA Team – Vecchia Guardia Berghem", place:"Monterosso CS Piermario Morosini", addr:"Bergamo" },
+  { cat:"c7", giornata:2, date:"2026-10-02T21:00", title:"Vecchia Guardia Berghem – FenaOmeni F.C.", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:3, date:"2026-10-09T20:30", title:"Vecchia Guardia Berghem – Sita' Olta", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:4, date:"2026-10-14T20:30", title:"Hakuna Matata – Vecchia Guardia Berghem", place:"Torre De' Roveri Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:5, date:"2026-10-23T21:00", title:"Amici Ponteranica – Vecchia Guardia Berghem", place:"Ponteranica Sintetico", addr:"Bergamo" },
+  { cat:"c7", giornata:6, date:"2026-10-30T21:30", title:"Asd Carvico – Vecchia Guardia Berghem", place:"Carvico Campo Comunale", addr:"Bergamo" },
+  { cat:"c7", giornata:7, date:"2026-11-06T20:00", title:"Vecchia Guardia Berghem – Asd Comun Nuovo calcio", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:8, date:"2026-11-12T20:00", title:"Newsari – Vecchia Guardia Berghem", place:"Presezzo Centro sportivo", addr:"Bergamo" },
+  { cat:"c7", giornata:10, date:"2026-11-27T21:00", title:"Vecchia Guardia Berghem – My-bg", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:11, date:"2026-11-30T21:00", title:"San Sebastian Soccer – Vecchia Guardia Berghem", place:"Comun Nuovo Centro Sportivo", addr:"Bergamo" },
+  { cat:"c7", giornata:12, date:"2027-02-05T21:00", title:"Vecchia Guardia Berghem – RSA Team", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:13, date:"2027-02-08T20:00", title:"FenaOmeni F.C. – Vecchia Guardia Berghem", place:"Curno Marigolda Centro sportivo", addr:"Bergamo" },
+  { cat:"c7", giornata:14, date:"2027-02-15T21:00", title:"Sita' Olta – Vecchia Guardia Berghem", place:"Valtesse Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:15, date:"2027-02-26T21:00", title:"Vecchia Guardia Berghem – Hakuna Matata", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:16, date:"2027-03-05T20:30", title:"Vecchia Guardia Berghem – Amici Ponteranica", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:17, date:"2027-03-12T21:00", title:"Vecchia Guardia Berghem – Asd Carvico", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:18, date:"2027-03-17T21:00", title:"Asd Comun Nuovo calcio – Vecchia Guardia Berghem", place:"Comun Nuovo Centro Sportivo", addr:"Bergamo" },
+  { cat:"c7", giornata:19, date:"2027-03-26T20:30", title:"Vecchia Guardia Berghem – Newsari", place:"Celadina Oratorio", addr:"Bergamo" },
+  { cat:"c7", giornata:21, date:"2027-04-05T21:00", title:"My-bg – Vecchia Guardia Berghem", place:"Oratorio Villaggio Sposi", addr:"Bergamo" },
+  { cat:"c7", giornata:22, date:"2027-04-16T21:00", title:"Vecchia Guardia Berghem – San Sebastian Soccer", place:"Celadina Oratorio", addr:"Bergamo" },
 
-            nextMatches.forEach(m => {
-                const dateObj = new Date(m.date);
-                const formattedDate = dateObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
-                const formattedTime = dateObj.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.address + ' ' + m.locationName)}`;
+  { cat:"c11", giornata:1, date:"2026-09-24T21:00", title:"G.L. Sporting – GiardiniInErbaSintetica.it", place:"Azzano S.P. Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:2, date:"2026-10-02T21:00", title:"G.L. Sporting – Nembrese 1913", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:4, date:"2026-10-13T20:30", title:"Asd Comun Nuovo calcio – G.L. Sporting", place:"Azzano S.P. Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:5, date:"2026-10-23T21:00", title:"G.L. Sporting – Asd Olfez Fc", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:6, date:"2026-10-29T21:05", title:"S.S NicoGesteam – G.L. Sporting", place:"Excelsior - Bergamo", addr:"Bergamo" },
+  { cat:"c11", giornata:7, date:"2026-11-06T21:00", title:"G.L. Sporting – Over 35 Urgnano", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:8, date:"2026-11-09T21:00", title:"Praticain.it – G.L. Sporting", place:"Grassobbio Centro sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:9, date:"2026-11-20T21:00", title:"G.L. Sporting – Azzanese", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:10, date:"2026-11-23T21:05", title:"EdilPlanet Dalmine – G.L. Sporting", place:"Excelsior - Bergamo", addr:"Bergamo" },
+  { cat:"c11", giornata:11, date:"2026-12-04T21:00", title:"G.L. Sporting – Excelsior Over 40", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:12, date:"2027-01-25T21:05", title:"GiardiniInErbaSintetica.it – G.L. Sporting", place:"Excelsior - Bergamo", addr:"Bergamo" },
+  { cat:"c11", giornata:13, date:"2027-02-01T21:00", title:"Nembrese 1913 – G.L. Sporting", place:"Celadina Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:15, date:"2027-02-17T21:05", title:"G.L. Sporting – Asd Comun Nuovo calcio", place:"Excelsior - Bergamo", addr:"Bergamo" },
+  { cat:"c11", giornata:16, date:"2027-02-22T21:05", title:"Asd Olfez Fc – G.L. Sporting", place:"Excelsior - Bergamo", addr:"Bergamo" },
+  { cat:"c11", giornata:17, date:"2027-03-05T21:00", title:"G.L. Sporting – S.S NicoGesteam", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:18, date:"2027-03-12T21:30", title:"Over 35 Urgnano – G.L. Sporting", place:"Azzano S.P. Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:19, date:"2027-03-19T21:00", title:"G.L. Sporting – Praticain.it", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:20, date:"2027-03-23T20:30", title:"Azzanese – G.L. Sporting", place:"Azzano S.P. Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:21, date:"2027-04-09T21:00", title:"G.L. Sporting – EdilPlanet Dalmine", place:"Bergamo San Tomaso Centro Sportivo", addr:"Bergamo" },
+  { cat:"c11", giornata:22, date:"2027-04-15T21:05", title:"Excelsior Over 40 – G.L. Sporting", place:"Excelsior - Bergamo", addr:"Bergamo" }
+];
 
-                const card = document.createElement('div');
-                card.className = `card ${m.category}`;
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span>${m.catName}</span>
-                        <span>📅 ${formattedDate} - ⏰ ${formattedTime}</span>
-                    </div>
-                    <div class="card-title">${m.title}</div>
-                    <div class="card-details">
-                        <span>📍 <strong>Campo:</strong> ${m.locationName}</span>
-                        <span>🗺️ <a class="map-link" href="${mapsUrl}" target="_blank">${m.address} (Apri Mappa)</a></span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+const venues = [
+  { cat:"mattia", name:"Atalanta Bergamasca C. Sq.B", field:"C.S. Comunale N.1 (E.A.)", loc:"Brembate", addr:"Via Oratorio 20", when:"Domenica · 16:00" },
+  { cat:"mattia", name:"Caravaggio S.r.l.", field:"C.S. Comunale Campo N.2 (E.A.)", loc:"Caravaggio", addr:"Via G. Castoldi 11", when:"Sabato · 14:00" },
+  { cat:"mattia", name:"Calcio Oratorio Cologno", field:"Oratorio \"San Giovanni Bosco\"", loc:"Cologno al Serio", addr:"Via Manzoni 15", when:"Sabato · 14:30" },
+  { cat:"mattia", name:"Trevigliese S.S.D.", field:"C.S. Comunale \"A. Mazza\"", loc:"Treviglio", addr:"Via Malgari 1", when:"Sabato · 14:30", home:true },
+  { cat:"mattia", name:"Oratorio Calvenzano", field:"Oratorio \"S. Croce\"", loc:"Calvenzano", addr:"Via Roma 10", when:"Sabato · 14:30" },
+  { cat:"mattia", name:"Colognese", field:"Stadio Comunale Facchetti 2 (E.A.)", loc:"Cologno al Serio", addr:"Via delle Galose/Betosca", when:"Sabato · 14:30" },
+  { cat:"mattia", name:"Accademia PBC Gera d'Adda", field:"Campo Comunale N.2", loc:"Pontirolo Nuovo", addr:"Via Armando Diaz 22", when:"Sabato · 14:30" },
+  { cat:"mattia", name:"Virtus Ciserano Bergamo 1909", field:"C.S. Comunale Campo N.2 (E.A.)", loc:"Ciserano", addr:"Via Mazzini 13", when:"Domenica · 11:00" },
+  { cat:"mattia", name:"A.C.O.S. Treviglio Calcio", field:"C.S. Comunale \"A. Mazza\"", loc:"Treviglio", addr:"Via Malgari 1", when:"Sabato · 14:30" },
+  { cat:"mattia", name:"Brignanese Calcio A.S.D.", field:"Centro Sportivo Comunale", loc:"Brignano Gera d'Adda", addr:"Via Olimpia", when:"Sabato · 14:45" },
+  { cat:"c7", name:"Vecchia Guardia Berghem", field:"Celadina Oratorio", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 20:00-21:00", home:true },
+  { cat:"c7", name:"Amici Ponteranica", field:"Ponteranica Sintetico", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 21:00" },
+  { cat:"c7", name:"Asd Carvico", field:"Carvico Campo Comunale", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 21:30" },
+  { cat:"c7", name:"Asd Comun Nuovo calcio", field:"Comun Nuovo Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Mercoledì · 21:00" },
+  { cat:"c7", name:"FenaOmeni F.C.", field:"Curno Marigolda Centro sportivo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 20:00" },
+  { cat:"c7", name:"Hakuna Matata", field:"Torre De' Roveri Oratorio", loc:"Bergamo", addr:"Bergamo", when:"Mercoledì · 20:30" },
+  { cat:"c7", name:"My-bg", field:"Bergamo - Oratorio Villaggio Sposi", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:00" },
+  { cat:"c7", name:"Newsari", field:"Presezzo Centro sportivo", loc:"Bergamo", addr:"Bergamo", when:"Giovedì · 20:00" },
+  { cat:"c7", name:"RSA Team", field:"Monterosso CS Piermario Morosini", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 21:00" },
+  { cat:"c7", name:"San Sebastian Soccer", field:"Comun Nuovo Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:00" },
+  { cat:"c7", name:"Sita' Olta", field:"Valtesse Oratorio", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:00" },
 
-        // RENDER CALENDARIO
-        function renderCalendar(filter = 'all') {
-            const container = document.getElementById('fullCalendarList');
-            container.innerHTML = '';
-            const sorted = [...matches].sort((a, b) => new Date(a.date) - new Date(b.date));
-            const filtered = sorted.filter(m => filter === 'all' || m.category === filter);
+  { cat:"c11", name:"G.L. Sporting", field:"Bergamo San Tomaso Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 21:00 (campo principale)", home:true },
+  { cat:"c11", name:"G.L. Sporting", field:"Azzano S.P. Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Giovedì · 21:00 (campo alternativo)", home:true },
+  { cat:"c11", name:"G.L. Sporting", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Mercoledì · 21:05 (campo alternativo)", home:true },
+  { cat:"c11", name:"Asd Comun Nuovo calcio", field:"Azzano S.P. Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Martedì · 20:30" },
+  { cat:"c11", name:"Asd Olfez Fc", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:05" },
+  { cat:"c11", name:"Azzanese", field:"Azzano S.P. Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Martedì · 20:30" },
+  { cat:"c11", name:"EdilPlanet Dalmine", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:05" },
+  { cat:"c11", name:"Excelsior Over 40", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Giovedì · 21:05" },
+  { cat:"c11", name:"GiardiniInErbaSintetica.it", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:05" },
+  { cat:"c11", name:"Nembrese 1913", field:"Celadina Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:00" },
+  { cat:"c11", name:"Over 35 Urgnano", field:"Azzano S.P. Centro Sportivo", loc:"Bergamo", addr:"Bergamo", when:"Venerdì · 21:30" },
+  { cat:"c11", name:"Praticain.it", field:"Grassobbio Centro sportivo", loc:"Bergamo", addr:"Bergamo", when:"Lunedì · 21:00" },
+  { cat:"c11", name:"S.S NicoGesteam", field:"Excelsior - Bergamo", loc:"Bergamo", addr:"Bergamo", when:"Giovedì · 21:05" }
+];
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state">Nessuna partita trovata.</div>';
-                return;
-            }
+/* ============== HELPERS ============== */
+const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+const GIORNI = ["dom","lun","mar","mer","gio","ven","sab"];
+const MESI_LUNGHI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 
-            filtered.forEach(m => {
-                const dateObj = new Date(m.date);
-                const formattedDate = dateObj.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-                const formattedTime = dateObj.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.address + ' ' + m.locationName)}`;
+function mapsUrl(m){ return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(m.addr+' '+m.place)}`; }
 
-                const card = document.createElement('div');
-                card.className = `card ${m.category}`;
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span>${m.catName}</span>
-                        <span>📅 ${formattedDate} - ⏰ ${formattedTime}</span>
-                    </div>
-                    <div class="card-title">${m.title}</div>
-                    <div class="card-details">
-                        <span>📍 <strong>Struttura:</strong> ${m.locationName}</span>
-                        <span>🗺️ <a class="map-link" href="${mapsUrl}" target="_blank">${m.address} (Apri Mappa)</a></span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+function daysUntil(d, now){
+  const a = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const b = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.round((b-a)/86400000);
+}
 
-        document.querySelectorAll('#sec-calendar .filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('#sec-calendar .filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderCalendar(this.getAttribute('data-filter'));
-            });
-        });
+function badge(catKey, size){
+  const t = TEAMS[catKey];
+  return `<span class="badge" style="background:${t.color};${size?`width:${size}px;height:${size}px;font-size:${size*0.42}px;`:''}">${t.short}</span>`;
+}
 
-        // RENDER SEDI CAMPI
-        function renderVenues(filter = 'all') {
-            const container = document.getElementById('venuesList');
-            container.innerHTML = '';
-            const sortedVenues = [...venues].sort((a, b) => a.name.localeCompare(b.name));
-            const filtered = sortedVenues.filter(v => filter === 'all' || v.category === filter);
+/* ============== RENDER: HERO (prossimo impegno, su tutte le squadre) ============== */
+function renderHero(now){
+  const upcoming = matches
+    .map(m => ({...m, dt:new Date(m.date)}))
+    .filter(m => m.dt.getTime()+2*3600000 > now.getTime())
+    .sort((a,b)=>a.dt-b.dt);
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state">Nessuna sede trovata.</div>';
-                return;
-            }
+  const hero = document.getElementById('hero');
+  if (upcoming.length === 0){
+    hero.innerHTML = `<div class="hero-top"><span class="app-name">Football Planner PRO</span></div>
+      <div class="hero-fixture" style="margin-top:30px;">Nessun impegno in programma.</div>`;
+    return;
+  }
+  const next = upcoming[0];
+  const t = TEAMS[next.cat];
+  const days = daysUntil(next.dt, now);
+  const label = days===0 ? "si gioca oggi" : days===1 ? "si gioca domani" : `tra ${days} giorni`;
+  const dataLunga = `${GIORNI[next.dt.getDay()]} ${next.dt.getDate()} ${MESI_LUNGHI[next.dt.getMonth()]}`;
+  const ora = next.dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  const localitaBreve = next.addr.split(',')[1]?.trim() || next.addr;
+  const giornataChip = next.giornata ? `<span class="hero-giornata">Giornata ${next.giornata}</span>` : '';
 
-            filtered.forEach(v => {
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.address + ' ' + v.locality)}`;
-                
-                const card = document.createElement('div');
-                card.className = `card ${v.category}`;
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span>${v.locality}</span>
-                        <span>🏟️ ${v.category.toUpperCase()}</span>
-                    </div>
-                    <div class="card-title">${v.name}</div>
-                    <div class="card-details">
-                        <span>🏷️ <strong>Denominazione:</strong> ${v.field}</span>
-                        <span>⚽ <strong>Giorno Ufficiale:</strong> ${v.day}</span>
-                        <span>🗺️ <a class="map-link" href="${mapsUrl}" target="_blank">${v.address} (${v.locality}) - Apri Mappa</a></span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+  hero.innerHTML = `
+    <div class="hero-top">
+      <span class="app-name">Football Planner PRO</span>
+      <span class="data-oggi">${GIORNI[now.getDay()]} ${now.getDate()} ${MESI[now.getMonth()]}</span>
+    </div>
+    <div class="hero-label">Prossimo impegno — ${t.label}</div>
+    <div class="hero-main">
+      <div class="hero-count">${days}</div>
+      <div class="hero-count-unit">${label.replace(/^(tra \d+ )/,'')}</div>
+    </div>
+    <div class="hero-fixture">${badge(next.cat,22)}${next.title}</div>
+    <div class="hero-meta">
+      <span class="row">${ICO.clock} ${dataLunga.charAt(0).toUpperCase()+dataLunga.slice(1)}, ${ora}</span>
+    </div>
+    <div class="hero-meta" style="margin-top:4px;">
+      <a href="${mapsUrl(next)}" target="_blank">${ICO.pin} ${next.place} — ${localitaBreve}</a>
+    </div>
+    ${giornataChip}
+  `;
+}
 
-        document.querySelectorAll('#sec-venues .filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('#sec-venues .filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderVenues(this.getAttribute('data-venue-filter'));
-            });
-        });
+/* ============== RENDER: HOME — in arrivo per le altre due squadre ============== */
+function renderUpNext(now){
+  const container = document.getElementById('upnext-strip');
+  const nowT = now.getTime();
 
-        // Inizializzazione all'avvio
-        renderHome();
-        renderCalendar('all');
-        renderVenues('all');
-    </script>
+  const nextByCat = Object.keys(TEAMS).map(cat=>{
+    const list = matches.filter(m=>m.cat===cat)
+      .map(m=>({...m, dt:new Date(m.date)}))
+      .filter(m=>m.dt.getTime()+2*3600000 > nowT)
+      .sort((a,b)=>a.dt-b.dt);
+    return list[0];
+  }).filter(Boolean).sort((a,b)=>a.dt-b.dt);
+
+  // togliamo quella già mostrata in hero (la più imminente in assoluto)
+  const rest = nextByCat.slice(1);
+
+  if (rest.length === 0){
+    container.innerHTML = `<h2 class="section-title">Le altre squadre</h2><div class="empty-state">Nessun altro impegno nei prossimi giorni.</div>`;
+    return;
+  }
+
+  let html = `<h2 class="section-title">In arrivo anche</h2><div class="upnext-strip">`;
+  rest.forEach(m=>{
+    html += matchCard(m, now);
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+/* ============== CARD PARTITA (stile tagliando) ============== */
+function matchKey(m){ return m.cat + '|' + m.date; }
+
+function nextMatchKeys(now){
+  const nowT = now.getTime();
+  const keys = new Set();
+  Object.keys(TEAMS).forEach(cat=>{
+    const next = matches.filter(m=>m.cat===cat)
+      .map(m=>({...m, dt:new Date(m.date)}))
+      .filter(m=>m.dt.getTime()+2*3600000 > nowT)
+      .sort((a,b)=>a.dt-b.dt)[0];
+    if (next) keys.add(matchKey(next));
+  });
+  return keys;
+}
+
+function matchCard(m, now, isNext){
+  const t = TEAMS[m.cat];
+  const ora = m.dt.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  return `
+    <div class="card ${isNext ? 'next' : ''}" style="${isNext ? `--accent:${t.color};` : ''}">
+      <div class="stub" style="color:${t.color};">
+        <div class="day">${m.dt.getDate()}</div>
+        <div class="mon">${MESI[m.dt.getMonth()].toUpperCase()}</div>
+        <div class="wk">${GIORNI[m.dt.getDay()]}</div>
+      </div>
+      <div class="body">
+        <div class="top-row">
+          <span class="team-name">${badge(m.cat,18)}${t.label}${isNext ? '<span class="next-tag" style="background:'+t.color+'">Prossima</span>' : ''}</span>
+          <span class="time-col">
+            <span class="time">${ora}</span>
+            ${m.giornata ? `<span class="giornata-tag">G${m.giornata}</span>` : ''}
+          </span>
+        </div>
+        <div class="fixture">${m.title}</div>
+        <div class="place-row">
+          ${ICO.pin}
+          <a href="${mapsUrl(m)}" target="_blank">${m.place} ${ICO.arrow}</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============== RENDER: CALENDARIO ============== */
+function renderCalendarChips(){
+  const el = document.getElementById('cal-chips');
+  const all = [{key:'all', label:'Tutte', color:'#15181a'}, ...Object.entries(TEAMS).map(([k,v])=>({key:k,label:v.short,color:v.color}))];
+  el.innerHTML = all.map((c,i)=>`
+    <button class="chip ${i===0?'active':''}" data-filter="${c.key}">
+      <span class="dot" style="background:${c.color}"></span>${c.key==='all'?'Tutte':TEAMS[c.key].chipLabel}
+    </button>
+  `).join('');
+  el.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      el.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCalendarList(btn.dataset.filter);
+    });
+  });
+}
+
+function renderCalendarList(filter){
+  const container = document.getElementById('cal-list');
+  const now = new Date();
+  const nextKeys = nextMatchKeys(now);
+  const list = matches
+    .map(m=>({...m, dt:new Date(m.date)}))
+    .filter(m=> filter==='all' || m.cat===filter)
+    .sort((a,b)=>a.dt-b.dt);
+
+  if (list.length===0){
+    container.innerHTML = `<div class="empty-state">Nessuna partita per questo filtro.</div>`;
+    return;
+  }
+  container.innerHTML = list.map(m=>matchCard(m, now, nextKeys.has(matchKey(m)))).join('');
+}
+
+/* ============== RENDER: CAMPI ============== */
+function renderVenueChips(){
+  const el = document.getElementById('venue-chips');
+  const all = [{key:'all', label:'Tutti'}, ...Object.entries(TEAMS).map(([k,v])=>({key:k, label:v.short}))];
+  el.innerHTML = all.map((c,i)=>`
+    <button class="chip ${i===0?'active':''}" data-vfilter="${c.key}">
+      ${c.key==='all' ? 'Tutti' : `<span class="dot" style="background:${TEAMS[c.key].color}"></span>${TEAMS[c.key].chipLabel}`}
+    </button>
+  `).join('');
+  el.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      el.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderVenueList(btn.dataset.vfilter);
+    });
+  });
+}
+
+function renderVenueList(filter){
+  const container = document.getElementById('venue-list');
+  const list = venues.filter(v=> filter==='all' || v.cat===filter)
+    .sort((a,b)=> (b.home?1:0)-(a.home?1:0) || a.name.localeCompare(b.name));
+  if (list.length===0){
+    container.innerHTML = `<div class="empty-state">Nessun campo per questo filtro.</div>`;
+    return;
+  }
+  container.innerHTML = list.map(v=>`
+    <div class="venue-row">
+      <div class="vtop">${badge(v.cat,16)}<span class="vname">${v.name}</span>${v.home?'<span class="home-tag">Casa</span>':''}</div>
+      <div class="vfield">${v.field} — ${v.loc}</div>
+      <div class="vmeta">
+        <span>${v.when}</span>
+        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.addr+' '+v.loc)}" target="_blank">${v.addr} ${ICO.arrow}</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============== TAB BAR ============== */
+function renderTabbar(){
+  const tabs = [
+    {key:'home', label:'Home', icon:ICO.home},
+    {key:'calendar', label:'Calendario', icon:ICO.cal},
+    {key:'venues', label:'Campi', icon:ICO.field},
+    {key:'standings', label:'Classifiche', icon:ICO.cup},
+    {key:'conflicts', label:'Conflitti', icon:ICO.conflict}
+  ];
+  const el = document.getElementById('tabbar');
+  el.innerHTML = tabs.map((t,i)=>`
+    <button class="${i===0?'active':''}" data-tab="${t.key}">${t.icon}<span>${t.label}</span></button>
+  `).join('');
+  el.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      el.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      document.getElementById('sec-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+/* ============== CONFLITTI ============== */
+// Durata effettiva delle due partite "mie" (non il campionato di Mattia, che non gioco io)
+const DURATA = {
+  c7:  { tempo:25, intervallo:5 },   // 25+5+25 = 55'
+  c11: { tempo:40, intervallo:5 }    // 40+5+40 = 85'
+};
+
+function addMin(date, min){ return new Date(date.getTime() + min*60000); }
+
+function finestraPartita(m){
+  const d = DURATA[m.cat];
+  const start = new Date(m.date);
+  const t1End = addMin(start, d.tempo);
+  const t2Start = addMin(t1End, d.intervallo);
+  const end = addMin(t2Start, d.tempo);
+  return { ...m, start, t1End, t2Start, end, tempo:d.tempo, intervallo:d.intervallo, totale:d.tempo*2+d.intervallo };
+}
+
+function fmtOra(d){ return d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); }
+function fmtData(d){ return `${GIORNI[d.getDay()]} ${d.getDate()} ${MESI_LUNGHI[d.getMonth()]}`; }
+
+// Descrive "a che punto della partita a7" cade un certo minuto trascorso dal fischio d'inizio
+function classificaMomento(minuti, tempo, intervallo){
+  if (minuti <= 0) return "prima del fischio d'inizio";
+  if (minuti < tempo) return `durante il primo tempo (minuto ${Math.round(minuti)}')`;
+  if (minuti < tempo+intervallo) return `durante l'intervallo`;
+  if (minuti < tempo*2+intervallo) return `durante il secondo tempo (minuto ${Math.round(minuti-tempo-intervallo)}')`;
+  return `a fine partita`;
+}
+
+function getConflitti(travelMin, contingencyMin){
+  const buffer = travelMin + contingencyMin; // minuti di "cuscinetto" necessari per lo spostamento
+  const c7List  = matches.filter(m=>m.cat==='c7').map(finestraPartita);
+  const c11List = matches.filter(m=>m.cat==='c11').map(finestraPartita);
+  const conflitti = [];
+
+  c7List.forEach(a=>{
+    c11List.forEach(b=>{
+      // conflitto se non c'è abbastanza margine tra la fine di una e l'inizio dell'altra, in nessuno dei due ordini
+      const bufferMs = buffer*60000;
+      const abbastanzaTempoAB = (a.end.getTime() + bufferMs) <= b.start.getTime();
+      const abbastanzaTempoBA = (b.end.getTime() + bufferMs) <= a.start.getTime();
+      if (!abbastanzaTempoAB && !abbastanzaTempoBA){
+        const overlapStart = new Date(Math.max(a.start.getTime(), b.start.getTime()));
+        const overlapEnd = new Date(Math.min(a.end.getTime(), b.end.getTime()));
+        const overlapMin = Math.max(0, Math.round((overlapEnd-overlapStart)/60000));
+        conflitti.push({ c7:a, c11:b, overlapMin });
+      }
+    });
+  });
+  return conflitti.sort((x,y)=>x.c7.start-y.c7.start);
+}
+
+// Opzione 1: gioco con la squadra a7 e poi mi sposto per Over40 — a che punto devo uscire?
+function suggerimentoOpzione1(c7m, c11m, travelMin, contingencyMin){
+  const buffer = travelMin + contingencyMin;
+  const gapInizio = (c11m.start.getTime() - c7m.start.getTime())/60000;
+  const maxPerInizio = gapInizio - buffer;
+
+  if (maxPerInizio >= c7m.totale){
+    return `Gioca tutta la partita a7 (fino alle ${fmtOra(c7m.end)}): hai comunque il tempo di arrivare per il fischio d'inizio di Over40 alle ${fmtOra(c11m.start)}.`;
+  }
+  if (maxPerInizio > 0){
+    const leaveTime = addMin(c7m.start, maxPerInizio);
+    const momento = classificaMomento(maxPerInizio, c7m.tempo, c7m.intervallo);
+    return `Esci dal campo a7 ${momento} — entro le ${fmtOra(leaveTime)} — e arrivi in tempo per il fischio d'inizio di Over40 (${fmtOra(c11m.start)}).`;
+  }
+
+  // non arrivi per il fischio d'inizio: calcola il massimo per arrivare prima del 2° tempo di Over40
+  const secondoTempoOver40 = c11m.t2Start;
+  const maxPer2Tempo = (secondoTempoOver40.getTime() - c7m.start.getTime())/60000 - buffer;
+  if (maxPer2Tempo <= 0){
+    return `Con questi tempi di spostamento non arrivi nemmeno per l'inizio del secondo tempo di Over40 (${fmtOra(secondoTempoOver40)}). In questo caso l'Opzione 2 è la scelta più realistica.`;
+  }
+  const cap = Math.min(maxPer2Tempo, c7m.totale);
+  const leaveTime2 = addMin(c7m.start, cap);
+  const momento2 = classificaMomento(cap, c7m.tempo, c7m.intervallo);
+  return `Non arrivi per il fischio d'inizio di Over40 (${fmtOra(c11m.start)}), ma restando a7 ${momento2} — fino alle ${fmtOra(leaveTime2)} — arrivi giusto in tempo per l'inizio del secondo tempo di Over40 (${fmtOra(secondoTempoOver40)}).`;
+}
+
+function renderConflicts(){
+  const travelMin = parseFloat(document.getElementById('travel-min').value) || 0;
+  const contingencyMin = parseFloat(document.getElementById('contingency-min').value) || 0;
+  const conflitti = getConflitti(travelMin, contingencyMin);
+  const container = document.getElementById('conflicts-list');
+
+  if (conflitti.length===0){
+    container.innerHTML = `<div class="empty-state">Nessun conflitto rilevato con questi tempi di spostamento. Se li riduci potresti scoprirne qualcuno nascosto, se li aumenti qualcuno potrebbe sparire.</div>`;
+    return;
+  }
+
+  container.innerHTML = conflitti.map(({c7:a, c11:b, overlapMin})=>{
+    const opt1 = suggerimentoOpzione1(a, b, travelMin, contingencyMin);
+    const overlapText = overlapMin > 0
+      ? `${overlapMin}' di sovrapposizione diretta`
+      : `nessun minuto di sovrapposizione, ma margine insufficiente per lo spostamento`;
+    return `
+      <div class="conflict-card">
+        <div class="conflict-head">
+          <span class="cdate">${fmtData(a.start).charAt(0).toUpperCase()+fmtData(a.start).slice(1)}</span>
+          <span class="coverlap">${overlapText}</span>
+        </div>
+        <div class="conflict-matches">
+          <div class="conflict-match-row">
+            <span class="cm-team">${badge('c7',18)}${TEAMS.c7.label} — ${a.title}</span>
+            <span class="cm-when">${fmtOra(a.start)}–${fmtOra(a.end)}</span>
+          </div>
+          <div class="conflict-match-row">
+            <span class="cm-team">${badge('c11',18)}${TEAMS.c11.label} — ${b.title}</span>
+            <span class="cm-when">${fmtOra(b.start)}–${fmtOra(b.end)}</span>
+          </div>
+        </div>
+        <div class="conflict-options">
+          <div class="option-box">
+            <div class="opt-label">Opzione 1 — dividersi tra le due</div>
+            <p>${opt1}</p>
+          </div>
+          <div class="option-box alt">
+            <div class="opt-label">Opzione 2 — una sola squadra</div>
+            <p>Gioca per intero una sola delle due partite e salta l'altra per questa giornata — nessun calcolo di spostamento necessario.</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function initConflicts(){
+  renderConflicts();
+  document.getElementById('travel-min').addEventListener('input', renderConflicts);
+  document.getElementById('contingency-min').addEventListener('input', renderConflicts);
+}
+
+/* ============== INIT ============== */
+const NOW = new Date();
+renderHero(NOW);
+renderUpNext(NOW);
+renderCalendarChips();
+renderCalendarList('all');
+renderVenueChips();
+renderVenueList('all');
+renderTabbar();
+initConflicts();
+</script>
 </body>
 </html>
